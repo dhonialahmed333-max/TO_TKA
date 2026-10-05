@@ -6,9 +6,6 @@
     <title>Tryout TKA Ekonomi HOTS - XII B</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
@@ -250,12 +247,11 @@
         const SECRET_TEACHER_TOKEN = "GURU2026";
         const TOTAL_DURATION_SECONDS = 90 * 60; // 90 Menit
 
-        // Bank 40 Soal HOTS Ekonomi (PG, MCMA Checklist, Menjodohkan)
+        // Bank 40 Soal HOTS Ekonomi Tanpa Simbol $ dan _
         const rawQuestionsData = [
             // Soal 1-25: PG (A-E)
             { id: 1, type: "pg", text: "Kelangkaan sumber daya memaksa individu memilih alternatif terbaik. Pak Budi memiliki lahan sehektar kelapa sawit dan dihadapkan pada pilihan: menanam jagung (keuntungan Rp15 juta/bulan) atau menanam padi (keuntungan Rp12 juta/bulan). Jika ia memilih menanam jagung, berapakah biaya peluangnya?", options: ["A. Rp15.000.000,-", "B. Rp12.000.000,-", "C. Rp27.000.000,-", "D. Rp3.000.000,-", "E. Rp0,-"], answer: 1 },
-            { id: 2, type: "pg", text: "Fungsi permintaan Qd = 100 - 2P dan fungsi penawaran Qs = -20 + 3P
-                . Jika pemerintah mengenakan pajak sebesar t = 5 per unit, tentukan titik keseimbangan pasar setelah pajak (Pt, Qt)!", options: ["A. (24, 52)", "B. (27, 46)", "C. (25, 50)", "D. (20, 60)", "E. (22, 56)"], answer: 1 },
+            { id: 2, type: "pg", text: "Fungsi permintaan Qd = 100 - 2P dan fungsi penawaran Qs = -20 + 3P. Jika pemerintah mengenakan pajak sebesar t = 5 per unit, tentukan titik keseimbangan pasar setelah pajak (Pt, Qt)!", options: ["A. (24, 52)", "B. (27, 46)", "C. (25, 50)", "D. (20, 60)", "E. (22, 56)"], answer: 1 },
             { id: 3, type: "pg", text: "Saat harga beras naik dari Rp10.000/kg menjadi Rp12.000/kg, jumlah beras yang diminta turun dari 100 kg menjadi 90 kg. Koefisien elastisitas permintaannya (Ed) adalah ...", options: ["A. 0,5 (Inelastis)", "B. 1,0 (Elastis Uniter)", "C. 2,0 (Elastis)", "D. 0,2 (Inelastis)", "E. 1,5 (Elastis)"], answer: 0 },
             { id: 4, type: "pg", text: "Diketahui fungsi biaya total TC = 2Q² + 10Q + 50. Jika barang dijual pada harga pasar sempurna P = 50, berapa jumlah output (Q) yang harus diproduksi agar perusahaan mencapai laba maksimum?", options: ["A. 10 unit", "B. 20 unit", "C. 15 unit", "D. 8 unit", "E. 12 unit"], answer: 0 },
             { id: 5, type: "pg", text: "Data PDB suatu negara: PDB Rp5.000 T, Produk warga negara di luar negeri Rp400 T, Produk warga negara asing di dalam negeri Rp600 T, Penyusutan Rp200 T, Pajak Tidak Langsung Rp150 T. Besarnya Produk Nasional Neto (NNI) adalah ...", options: ["A. Rp4.600 T", "B. Rp4.450 T", "C. Rp4.800 T", "D. Rp5.200 T", "E. Rp4.250 T"], answer: 1 },
@@ -416,7 +412,7 @@
             // Soal 35-40: PG Lanjutan (A-E)
             { id: 35, type: "pg", text: "Data Neraca Saldo: Kas Rp10 juta, Perlengkapan Rp3 juta, Beban Gaji Rp5 juta. Jika pada akhir periode gaji bulan Desember sebesar Rp1 juta belum dibayar, maka jurnal penyesuaian yang dibuat adalah ...", options: ["A. Beban Gaji (D) Rp1.000.000 ; Utang Gaji (K) Rp1.000.000", "B. Utang Gaji (D) Rp1.000.000 ; Beban Gaji (K) Rp1.000.000", "C. Beban Gaji (D) Rp5.000.000 ; Kas (K) Rp5.000.000", "D. Beban Gaji (D) Rp1.000.000 ; Kas (K) Rp1.000.000", "E. Kas (D) Rp1.000.000 ; Beban Gaji (K) Rp1.000.000"], answer: 0 },
             { id: 36, type: "pg", text: "Laju inflasi yang berada pada kisaran 30% - 100% per tahun dan dapat mengganggu kestabilan perekonomian nasional dikategorikan sebagai ...", options: ["A. Inflasi Ringan", "B. Inflasi Sedang", "C. Inflasi Berat", "D. Hiperinflasi", "E. Inflasi Merayap"], answer: 2 },
-            { id: 37, type: "pg", text: "Fungsi konsumsi $C = 500 + 0,8Y$. Apabila pendapatan nasional naik sebesar Rp100 miliar, maka besarnya tambahan tabungan ($\Delta S$) adalah ...", options: ["A. Rp80 miliar", "B. Rp20 miliar", "C. Rp100 miliar", "D. Rp500 miliar", "E. Rp580 miliar"], answer: 1 },
+            { id: 37, type: "pg", text: "Fungsi konsumsi C = 500 + 0,8Y. Apabila pendapatan nasional naik sebesar Rp100 miliar, maka besarnya tambahan tabungan (Delta S) adalah ...", options: ["A. Rp80 miliar", "B. Rp20 miliar", "C. Rp100 miliar", "D. Rp500 miliar", "E. Rp580 miliar"], answer: 1 },
             { id: 38, type: "pg", text: "Salah satu dampak negatif utama dari tingginya pengangguran friksional yang berkepanjangan bagi perekonomian adalah ...", options: ["A. Penurunan daya beli masyarakat dan potensi penurunan PDB riil", "B. Kenaikan laju inflasi secara drastis", "C. Meningkatnya cadangan devisa negara", "D. Penguatan nilai tukar mata uang nasional", "E. Penurunan beban anggaran bantuan sosial pemerintah"], answer: 0 },
             { id: 39, type: "pg", text: "Di antara pilihan akun berikut, manakah akun yang diikhtisarkan ke dalam Jurnal Penutup pada akhir periode?", options: ["A. Kas, Beban Gaji, Modal", "B. Pendapatan Jasa, Beban Sewa, Prive", "C. Piutang, Peralatan, Akumulasi Penyusutan", "D. Utang Dagang, Kas, Pendapatan", "E. Modal, Perlengkapan, Beban Listrik"], answer: 1 },
             { id: 40, type: "pg", text: "Apabila impor barang dan jasa suatu negara lebih besar daripada nilai ekspornya, maka posisi neraca perdagangannya mengalami ...", options: ["A. Surplus", "B. Defisit", "C. Seimbang", "D. Berimbang", "E. Ekuilibrium"], answer: 1 }
@@ -770,11 +766,6 @@
 
             document.getElementById('prevBtn').disabled = idx === 0;
             document.getElementById('nextBtn').innerText = idx === questionsData.length - 1 ? 'Selesai' : 'Berikutnya';
-
-            if (window.renderMathInElement) {
-                renderMathInElement(document.getElementById('questionText'));
-                renderMathInElement(optionsContainer);
-            }
 
             updateGridBtnStyles();
             updateAnsweredCount();
