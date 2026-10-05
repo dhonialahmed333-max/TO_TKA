@@ -251,15 +251,15 @@
         const TOTAL_DURATION_SECONDS = 90 * 60; // 90 Menit
 
         // Bank 40 Soal HOTS Ekonomi (PG, MCMA Checklist, Menjodohkan)
-        const questionsData = [
+        const rawQuestionsData = [
             // Soal 1-25: PG (A-E)
-            { id: 1, type: "pg", text: "Kelangkaan sumber daya memaksa individu memilih alternatif terbaik. Pak Budi memiliki lahan setelatah kelapa sawit dan dihadapkan pada pilihan: menanam jagung (keuntungan Rp15 juta/bulan) atau menanam padi (keuntungan Rp12 juta/bulan). Jika ia memilih menanam jagung, berapakah biaya peluangnya?", options: ["A. Rp15.000.000,-", "B. Rp12.000.000,-", "C. Rp27.000.000,-", "D. Rp3.000.000,-", "E. Rp0,-"], answer: 1 },
-            { id: 2, type: "pg", text: "Fungsi permintaan Qd = 100 - 2P dan fungsi penawaran Qs = -20 + 3P. Jika pemerintah mengenakan pajak sebesar t = 5 per unit, tentukan titik keseimbangan pasar setelah pajak (Pt, Qt)!", options: ["A. (24, 52)", "B. (27, 46)", "C. (25, 50)", "D. (20, 60)", "E. (22, 56)"], answer: 1 },
-            { id: 3, type: "pg", text: "Saat harga beras naik dari Rp10.000/kg menjadi Rp12.000/kg, jumlah beras yang diminta turun dari 100 kg menjadi 90 kg. Koefisien elastisitas permintaannya (Ed) adalah ...", options: ["A. 0,5 (Inelastis)", "B. 1,0 (Elastis Uniter)", "C. 2,0 (Elastis)", "D. 0,2 (Inelastis)", "E. 1,5 (Elastis)"], answer: 0 },
-            { id: 4, type: "pg", text: "Diketahui fungsi biaya total TC = 2Q^2 + 10Q + 50. Jika barang dijual pada harga pasar sempurna P = 50, berapa jumlah output (Q) yang harus diproduksi agar perusahaan mencapai laba maksimum?", options: ["A. 10 unit", "B. 20 unit", "C. 15 unit", "D. 8 unit", "E. 12 unit"], answer: 0 },
+            { id: 1, type: "pg", text: "Kelangkaan sumber daya memaksa individu memilih alternatif terbaik. Pak Budi memiliki lahan sehektar kelapa sawit dan dihadapkan pada pilihan: menanam jagung (keuntungan Rp15 juta/bulan) atau menanam padi (keuntungan Rp12 juta/bulan). Jika ia memilih menanam jagung, berapakah biaya peluangnya?", options: ["A. Rp15.000.000,-", "B. Rp12.000.000,-", "C. Rp27.000.000,-", "D. Rp3.000.000,-", "E. Rp0,-"], answer: 1 },
+            { id: 2, type: "pg", text: "Fungsi permintaan $Q_d = 100 - 2P$ dan fungsi penawaran $Q_s = -20 + 3P$. Jika pemerintah mengenakan pajak sebesar $t = 5$ per unit, tentukan titik keseimbangan pasar setelah pajak ($P_t, Q_t$)!", options: ["A. (24, 52)", "B. (27, 46)", "C. (25, 50)", "D. (20, 60)", "E. (22, 56)"], answer: 1 },
+            { id: 3, type: "pg", text: "Saat harga beras naik dari Rp10.000/kg menjadi Rp12.000/kg, jumlah beras yang diminta turun dari 100 kg menjadi 90 kg. Koefisien elastisitas permintaannya ($E_d$) adalah ...", options: ["A. 0,5 (Inelastis)", "B. 1,0 (Elastis Uniter)", "C. 2,0 (Elastis)", "D. 0,2 (Inelastis)", "E. 1,5 (Elastis)"], answer: 0 },
+            { id: 4, type: "pg", text: "Diketahui fungsi biaya total $TC = 2Q^2 + 10Q + 50$. Jika barang dijual pada harga pasar sempurna $P = 50$, berapa jumlah output ($Q$) yang harus diproduksi agar perusahaan mencapai laba maksimum?", options: ["A. 10 unit", "B. 20 unit", "C. 15 unit", "D. 8 unit", "E. 12 unit"], answer: 0 },
             { id: 5, type: "pg", text: "Data PDB suatu negara: PDB Rp5.000 T, Produk warga negara di luar negeri Rp400 T, Produk warga negara asing di dalam negeri Rp600 T, Penyusutan Rp200 T, Pajak Tidak Langsung Rp150 T. Besarnya Produk Nasional Neto (NNI) adalah ...", options: ["A. Rp4.600 T", "B. Rp4.450 T", "C. Rp4.800 T", "D. Rp5.200 T", "E. Rp4.250 T"], answer: 1 },
             { id: 6, type: "pg", text: "Indeks Harga Konsumen (IHK) bulan Januari 2026 adalah 115 dan IHK bulan Februari 2026 adalah 120. Berapakah laju inflasi bulan Februari 2026?", options: ["A. 4,17%", "B. 4,35%", "C. 5,00%", "D. 3,85%", "E. 4,50%"], answer: 0 },
-            { id: 7, type: "pg", text: "Diketahui fungsi konsumsi C = 200 + 0,75Y$. Jika pendapatan nasional (Y) sebesar Rp1.000 miliar, maka besarnya tabungan masyarakat (S) adalah ...", options: ["A. Rp50 miliar", "B. Rp100 miliar", "C. Rp150 miliar", "D. Rp200 miliar", "E. Rp250 miliar"], answer: 0 },
+            { id: 7, type: "pg", text: "Diketahui fungsi konsumsi $C = 200 + 0,75Y$. Jika pendapatan nasional ($Y$) sebesar Rp1.000 miliar, maka besarnya tabungan masyarakat ($S$) adalah ...", options: ["A. Rp50 miliar", "B. Rp100 miliar", "C. Rp150 miliar", "D. Rp200 miliar", "E. Rp250 miliar"], answer: 0 },
             { id: 8, type: "pg", text: "Suatu negara menetapkan kuota impor beras. Dampak langsung dari kebijakan pembatasan kuota impor tersebut di pasar domestik adalah ...", options: ["A. Harga beras di dalam negeri turun", "B. Jumlah barang beredar bertambah pesat", "C. Harga beras di dalam negeri naik dan produksi lokal terdorong", "D. Pendapatan negara dari tarif bea masuk meningkat pesat", "E. Konsumsi beras masyarakat meningkat pesat"], answer: 2 },
             { id: 9, type: "pg", text: "Di bawah ini yang merupakan ciri utama dari struktur pasar persaingan sempurna adalah ...", options: ["A. Terdapat satu penjual menguasai pasar", "B. Barang berkarakteristik terdiferensiasi", "C. Penjual dan pembeli bertindak sebagai price taker", "D. Adanya hambatan tinggi untuk masuk pasar", "E. Penjual memiliki kekuatan penuh mengatur harga"], answer: 2 },
             { id: 10, type: "pg", text: "Laporan keuangan yang menyajikan posisi aset, kewajiban, dan ekuitas suatu perusahaan pada tanggal tertentu adalah ...", options: ["A. Laporan Laba Rugi", "B. Laporan Perubahan Ekuitas", "C. Neraca (Laporan Posisi Keuangan)", "D. Laporan Arus Kas", "E. Catatan atas Laporan Keuangan"], answer: 2 },
@@ -275,7 +275,7 @@
             { id: 20, type: "pg", text: "Hukum Gossen I menjelaskan tentang fenomena konsumsi barang yang memenuhi prinsip ...", options: ["A. Utilitas total meningkat secara konstan", "B. Utilitas marginal menurun seiring bertambahnya konsumsi unit secara terus-menerus", "C. Kebutuhan beragam dipenuhi secara seimbang", "D. Konsumsi akan berhenti saat pendapatan habis", "E. Kepuasan konsumen tidak dapat diukur secara kuantitatif"], answer: 1 },
             { id: 21, type: "pg", text: "Dalam neraca pembayaran, arus modal masuk berupa investasi asing langsung (FDI) dicatat dalam ...", options: ["A. Transaksi Berjalan - Neraca Perdagangan (Kredit)", "B. Transaksi Modal dan Finansial (Kredit)", "C. Transaksi Berjalan - Neraca Jasa (Debet)", "D. Transaksi Modal dan Finansial (Debet)", "E. Cadangan Devisa (Debet)"], answer: 1 },
             { id: 22, type: "pg", text: "Kebijakan fiskal ekspansif yang dapat diambil pemerintah saat perekonomian mengalami resesi adalah ...", options: ["A. Menurunkan belanja pemerintah dan menaikkan pajak", "B. Menaikkan belanja pemerintah dan menurunkan tarif pajak", "C. Menjual surat utang negara dan menaikkan suku bunga", "D. Menurunkan belanja daerah dan memperketat anggaran", "E. Menghapus semua bantuan sosial masyarakat"], answer: 1 },
-            { id: 23, type: "pg", text: "Ketika MP = 0 (Marginal Product bernilai nol), maka kondisi Produk Total (TP) adalah ...", options: ["A. Bernilai nol", "B. Berada pada titik maksimum", "C. Sedang mengalami penurunan drastis", "D. Bernilai negatif", "E. Sama dengan Produk Rata-rata ($AP$)"], answer: 1 },
+            { id: 23, type: "pg", text: "Ketika $MP = 0$ (Marginal Product bernilai nol), maka kondisi Produk Total ($TP$) adalah ...", options: ["A. Bernilai nol", "B. Berada pada titik maksimum", "C. Sedang mengalami penurunan drastis", "D. Bernilai negatif", "E. Sama dengan Produk Rata-rata ($AP$)"], answer: 1 },
             { id: 24, type: "pg", text: "Teori Perdagangan Internasional yang dikemukakan oleh David Ricardo dikenal dengan teori ...", options: ["A. Keunggulan Mutlak (Absolute Advantage)", "B. Keunggulan Komparatif (Comparative Advantage)", "C. HECKSCHER-OHLIN (H-O)", "D. Merkantilisme", "E. Competitive Advantage"], answer: 1 },
             { id: 25, type: "pg", text: "Proses menutup akun-akun nominal (pendapatan, beban, ikhtisar laba rugi, dan prive) dilakukan pada akhir periode melalui ...", options: ["A. Jurnal Penyesuaian", "B. Jurnal Penutup", "C. Jurnal Pembalik", "D. Jurnal Khusus", "E. Neraca Saldo Setelah Penutupan"], answer: 1 },
 
@@ -350,7 +350,7 @@
             {
                 id: 31,
                 type: "matching",
-                text: "Jodohkanlah jenis koefisien elastisitas permintaan di kolom kiri dengan nilai koefisiennya (Ed) yang presisi di kolom kanan!",
+                text: "Jodohkanlah jenis koefisien elastisitas permintaan di kolom kiri dengan nilai koefisiennya ($E_d$) yang presisi di kolom kanan!",
                 pairs: [
                     { item: "Permintaan Elastis Uniter", correct: "Ed = 1" },
                     { item: "Permintaan Inelastis Sempurna", correct: "Ed = 0" },
@@ -415,17 +415,28 @@
             // Soal 35-40: PG Lanjutan (A-E)
             { id: 35, type: "pg", text: "Data Neraca Saldo: Kas Rp10 juta, Perlengkapan Rp3 juta, Beban Gaji Rp5 juta. Jika pada akhir periode gaji bulan Desember sebesar Rp1 juta belum dibayar, maka jurnal penyesuaian yang dibuat adalah ...", options: ["A. Beban Gaji (D) Rp1.000.000 ; Utang Gaji (K) Rp1.000.000", "B. Utang Gaji (D) Rp1.000.000 ; Beban Gaji (K) Rp1.000.000", "C. Beban Gaji (D) Rp5.000.000 ; Kas (K) Rp5.000.000", "D. Beban Gaji (D) Rp1.000.000 ; Kas (K) Rp1.000.000", "E. Kas (D) Rp1.000.000 ; Beban Gaji (K) Rp1.000.000"], answer: 0 },
             { id: 36, type: "pg", text: "Laju inflasi yang berada pada kisaran 30% - 100% per tahun dan dapat mengganggu kestabilan perekonomian nasional dikategorikan sebagai ...", options: ["A. Inflasi Ringan", "B. Inflasi Sedang", "C. Inflasi Berat", "D. Hiperinflasi", "E. Inflasi Merayap"], answer: 2 },
-            { id: 37, type: "pg", text: "Fungsi konsumsi C = 500 + 0,8Y. Apabila pendapatan nasional naik sebesar Rp100 miliar, maka besarnya tambahan tabungan (∆S) adalah ...", options: ["A. Rp80 miliar", "B. Rp20 miliar", "C. Rp100 miliar", "D. Rp500 miliar", "E. Rp580 miliar"], answer: 1 },
+            { id: 37, type: "pg", text: "Fungsi konsumsi $C = 500 + 0,8Y$. Apabila pendapatan nasional naik sebesar Rp100 miliar, maka besarnya tambahan tabungan ($\Delta S$) adalah ...", options: ["A. Rp80 miliar", "B. Rp20 miliar", "C. Rp100 miliar", "D. Rp500 miliar", "E. Rp580 miliar"], answer: 1 },
             { id: 38, type: "pg", text: "Salah satu dampak negatif utama dari tingginya pengangguran friksional yang berkepanjangan bagi perekonomian adalah ...", options: ["A. Penurunan daya beli masyarakat dan potensi penurunan PDB riil", "B. Kenaikan laju inflasi secara drastis", "C. Meningkatnya cadangan devisa negara", "D. Penguatan nilai tukar mata uang nasional", "E. Penurunan beban anggaran bantuan sosial pemerintah"], answer: 0 },
             { id: 39, type: "pg", text: "Di antara pilihan akun berikut, manakah akun yang diikhtisarkan ke dalam Jurnal Penutup pada akhir periode?", options: ["A. Kas, Beban Gaji, Modal", "B. Pendapatan Jasa, Beban Sewa, Prive", "C. Piutang, Peralatan, Akumulasi Penyusutan", "D. Utang Dagang, Kas, Pendapatan", "E. Modal, Perlengkapan, Beban Listrik"], answer: 1 },
             { id: 40, type: "pg", text: "Apabila impor barang dan jasa suatu negara lebih besar daripada nilai ekspornya, maka posisi neraca perdagangannya mengalami ...", options: ["A. Surplus", "B. Defisit", "C. Seimbang", "D. Berimbang", "E. Ekuilibrium"], answer: 1 }
         ];
 
+        let questionsData = [];
         let currentQuestion = 0;
-        let userAnswers = new Array(questionsData.length).fill(null);
+        let userAnswers = [];
         let studentData = {};
         let timerInterval = null;
         let startTime = null;
+
+        // Fungsi Acak Soal (Fisher-Yates Shuffle)
+        function shuffleArray(array) {
+            const arr = JSON.parse(JSON.stringify(array));
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
 
         function initAbsenDropdown() {
             const selectAbsen = document.getElementById('absenSiswa');
@@ -525,6 +536,7 @@
             const sessionData = {
                 studentData,
                 currentQuestion,
+                questionsData,
                 userAnswers,
                 startTime
             };
@@ -538,6 +550,7 @@
                     const data = JSON.parse(savedSession);
                     studentData = data.studentData;
                     currentQuestion = data.currentQuestion || 0;
+                    questionsData = data.questionsData || rawQuestionsData;
                     userAnswers = data.userAnswers || new Array(questionsData.length).fill(null);
                     startTime = data.startTime || Date.now();
 
@@ -577,6 +590,11 @@
 
             studentData = { nama, kelas, absen, scriptUrl };
             startTime = Date.now();
+            
+            // Acak urutan soal saat mulai quiz baru
+            questionsData = shuffleArray(rawQuestionsData);
+            userAnswers = new Array(questionsData.length).fill(null);
+
             saveCurrentSession();
 
             document.getElementById('identitasSection').classList.add('hidden');
