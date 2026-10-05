@@ -176,8 +176,9 @@
             </div>
         </div>
 
-        <!-- 3. Halaman Hasil Ringkas -->
-        <div id="resultSection" class="hidden max-w-xl mx-auto space-y-6">
+        <!-- 3. Halaman Hasil Ringkas + Pembahasan Detail -->
+        <div id="resultSection" class="hidden max-w-4xl mx-auto space-y-6">
+            <!-- Card Skor Hasil -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 text-center">
                 <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
                     <i class="fas fa-check-circle"></i>
@@ -185,7 +186,7 @@
                 <h2 class="text-2xl font-bold text-slate-800">Tryout Selesai!</h2>
                 <p class="text-sm text-slate-500 mt-1">Terima kasih, jawaban Anda telah tersimpan secara otomatis ke Google Sheets guru.</p>
 
-                <div class="mt-6 grid grid-cols-2 gap-4">
+                <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-left">
                         <span class="block text-xs text-slate-500 uppercase font-semibold">Nama Siswa</span>
                         <span id="resNama" class="font-bold text-slate-800 text-sm truncate block mt-1">-</span>
@@ -207,6 +208,21 @@
                 <div id="submissionStatus" class="mt-6 p-3 bg-emerald-50 rounded-xl text-xs font-semibold text-emerald-700 flex items-center justify-center space-x-2 border border-emerald-200">
                     <i class="fas fa-cloud-upload-alt text-base"></i>
                     <span>Status: Data Jawaban Berhasil Terkirim</span>
+                </div>
+            </div>
+
+            <!-- Kontainer Pembahasan Soal -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+                <div class="border-b pb-4 flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center space-x-2">
+                        <i class="fas fa-book-open text-indigo-600"></i>
+                        <span>Pembahasan Detail Soal</span>
+                    </h3>
+                    <span class="text-xs bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full font-semibold">40 Soal Lengkap</span>
+                </div>
+
+                <div id="pembahasanContainer" class="space-y-6">
+                    <!-- Pembahasan tiap nomor dipopulasikan lewat JS -->
                 </div>
             </div>
         </div>
@@ -247,36 +263,35 @@
         const SECRET_TEACHER_TOKEN = "GURU2026";
         const TOTAL_DURATION_SECONDS = 90 * 60; // 90 Menit
 
-        // Bank 40 Soal HOTS Ekonomi Tanpa Simbol $ dan _
+        // Bank 40 Soal HOTS Ekonomi Lengkap + Pembahasan
         const rawQuestionsData = [
-            // Soal 1-25: PG (A-E)
-            { id: 1, type: "pg", text: "Kelangkaan sumber daya memaksa individu memilih alternatif terbaik. Pak Budi memiliki lahan sehektar kelapa sawit dan dihadapkan pada pilihan: menanam jagung (keuntungan Rp15 juta/bulan) atau menanam padi (keuntungan Rp12 juta/bulan). Jika ia memilih menanam jagung, berapakah biaya peluangnya?", options: ["A. Rp15.000.000,-", "B. Rp12.000.000,-", "C. Rp27.000.000,-", "D. Rp3.000.000,-", "E. Rp0,-"], answer: 1 },
-            { id: 2, type: "pg", text: "Fungsi permintaan Qd = 100 - 2P dan fungsi penawaran Qs = -20 + 3P. Jika pemerintah mengenakan pajak sebesar t = 5 per unit, tentukan titik keseimbangan pasar setelah pajak (Pt, Qt)!", options: ["A. (24, 52)", "B. (27, 46)", "C. (25, 50)", "D. (20, 60)", "E. (22, 56)"], answer: 1 },
-            { id: 3, type: "pg", text: "Saat harga beras naik dari Rp10.000/kg menjadi Rp12.000/kg, jumlah beras yang diminta turun dari 100 kg menjadi 90 kg. Koefisien elastisitas permintaannya (Ed) adalah ...", options: ["A. 0,5 (Inelastis)", "B. 1,0 (Elastis Uniter)", "C. 2,0 (Elastis)", "D. 0,2 (Inelastis)", "E. 1,5 (Elastis)"], answer: 0 },
-            { id: 4, type: "pg", text: "Diketahui fungsi biaya total TC = 2Q² + 10Q + 50. Jika barang dijual pada harga pasar sempurna P = 50, berapa jumlah output (Q) yang harus diproduksi agar perusahaan mencapai laba maksimum?", options: ["A. 10 unit", "B. 20 unit", "C. 15 unit", "D. 8 unit", "E. 12 unit"], answer: 0 },
-            { id: 5, type: "pg", text: "Data PDB suatu negara: PDB Rp5.000 T, Produk warga negara di luar negeri Rp400 T, Produk warga negara asing di dalam negeri Rp600 T, Penyusutan Rp200 T, Pajak Tidak Langsung Rp150 T. Besarnya Produk Nasional Neto (NNI) adalah ...", options: ["A. Rp4.600 T", "B. Rp4.450 T", "C. Rp4.800 T", "D. Rp5.200 T", "E. Rp4.250 T"], answer: 1 },
-            { id: 6, type: "pg", text: "Indeks Harga Konsumen (IHK) bulan Januari 2026 adalah 115 dan IHK bulan Februari 2026 adalah 120. Berapakah laju inflasi bulan Februari 2026?", options: ["A. 4,17%", "B. 4,35%", "C. 5,00%", "D. 3,85%", "E. 4,50%"], answer: 0 },
-            { id: 7, type: "pg", text: "Diketahui fungsi konsumsi C = 200 + 0,75Y. Jika pendapatan nasional (Y) sebesar Rp1.000 miliar, maka besarnya tabungan masyarakat (S) adalah ...", options: ["A. Rp50 miliar", "B. Rp100 miliar", "C. Rp150 miliar", "D. Rp200 miliar", "E. Rp250 miliar"], answer: 0 },
-            { id: 8, type: "pg", text: "Suatu negara menetapkan kuota impor beras. Dampak langsung dari kebijakan pembatasan kuota impor tersebut di pasar domestik adalah ...", options: ["A. Harga beras di dalam negeri turun", "B. Jumlah barang beredar bertambah pesat", "C. Harga beras di dalam negeri naik dan produksi lokal terdorong", "D. Pendapatan negara dari tarif bea masuk meningkat pesat", "E. Konsumsi beras masyarakat meningkat pesat"], answer: 2 },
-            { id: 9, type: "pg", text: "Di bawah ini yang merupakan ciri utama dari struktur pasar persaingan sempurna adalah ...", options: ["A. Terdapat satu penjual menguasai pasar", "B. Barang berkarakteristik terdiferensiasi", "C. Penjual dan pembeli bertindak sebagai price taker", "D. Adanya hambatan tinggi untuk masuk pasar", "E. Penjual memiliki kekuatan penuh mengatur harga"], answer: 2 },
-            { id: 10, type: "pg", text: "Laporan keuangan yang menyajikan posisi aset, kewajiban, dan ekuitas suatu perusahaan pada tanggal tertentu adalah ...", options: ["A. Laporan Laba Rugi", "B. Laporan Perubahan Ekuitas", "C. Neraca (Laporan Posisi Keuangan)", "D. Laporan Arus Kas", "E. Catatan atas Laporan Keuangan"], answer: 2 },
-            { id: 11, type: "pg", text: "Perusahaan salon menerima pendapatan jasa tunai Rp3.000.000 dan sisa Rp2.000.000 dibayar bulan depan. Pengaruh transaksi ini pada persamaan dasar akuntansi adalah ...", options: ["A. Kas (+) Rp3.000.000, Piutang (+) Rp2.000.000, Modal (+) Rp5.000.000", "B. Kas (+) Rp5.000.000, Modal (+) Rp5.000.000", "C. Kas (+) Rp3.000.000, Utang (+) Rp2.000.000, Modal (+) Rp5.000.000", "D. Piutang (+) Rp5.000.000, Modal (+) Rp5.000.000", "E. Kas (+) Rp2.000.000, Piutang (+) Rp3.000.000, Modal (+) Rp5.000.000"], answer: 0 },
-            { id: 12, type: "pg", text: "Pada tanggal 31 Desember 2025, perlengkapan yang tersisa bernilai Rp1.500.000 dari saldo awal di Neraca Saldo sebesar Rp4.000.000. Jurnal penyesuaian yang benar adalah ...", options: ["A. Beban Perlengkapan (D) Rp1.500.000 ; Perlengkapan (K) Rp1.500.000", "B. Beban Perlengkapan (D) Rp2.500.000 ; Perlengkapan (K) Rp2.500.000", "C. Perlengkapan (D) Rp2.500.000 ; Beban Perlengkapan (K) Rp2.500.000", "D. Beban Perlengkapan (D) Rp4.000.000 ; Perlengkapan (K) Rp4.000.000", "E. Kas (D) Rp2.500.000 ; Perlengkapan (K) Rp2.500.000"], answer: 1 },
-            { id: 13, type: "pg", text: "Pemberian subsidi oleh pemerintah kepada produsen pupuk sebesar Rp1.000 per kg akan mengakibatkan pergeseran kurva ...", options: ["A. Permintaan bergeser ke kanan", "B. Permintaan bergeser ke kiri", "C. Penawaran bergeser ke kanan bawah", "D. Penawaran bergeser ke kiri atas", "E. Penawaran dan permintaan tidak berubah"], answer: 2 },
-            { id: 14, type: "pg", text: "Kebijakan moneter kontraktif yang dilakukan Bank Sentral untuk mengatasi inflasi tinggi adalah ...", options: ["A. Menurunkan suku bunga acuan", "B. Membeli surat-surat berharga di pasar terbuka", "C. Menurunkan cadangan kas minimum bank umum", "D. Menaikkan suku bunga acuan dan menjual SBI", "E. Mempermudah pemberian kredit kepada masyarakat"], answer: 3 },
-            { id: 15, type: "pg", text: "Jika Nilai Tukar Rupiah melemah terhadap Dolar AS (Depresiasi), maka dampak yang paling mungkin terjadi pada perdagangan internasional Indonesia adalah ...", options: ["A. Harga barang impor menjadi lebih murah", "B. Ekspor barang Indonesia menjadi lebih kompetitif di luar negeri", "C. Impor Indonesia meningkat pesat", "D. Neraca perdagangan langsung defisit", "E. Tidak ada dampak pada daya saing ekspor"], answer: 1 },
-            { id: 16, type: "pg", text: "Konsep pendapatan nasional yang dihitung berdasarkan jumlah pendapatan yang diterima oleh setiap anggota masyarakat yang benar-benar siap dibelanjakan dinamakan ...", options: ["A. Gross National Product (GNP)", "B. Net National Income (NNI)", "C. Personal Income (PI)", "D. Disposable Income (DI)", "E. Net Domestic Product (NDP)"], answer: 3 },
-            { id: 17, type: "pg", text: "Bank Sentral menaikkan Cash Ratio (cadangan kas minimum) dari 5% menjadi 8%. Dampak kebijakan ini terhadap jumlah uang beredar (JUB) adalah ...", options: ["A. JUB akan bertambah karena bank lebih fleksibel", "B. JUB akan berkurang karena kemampuan kredit bank menurun", "C. JUB tidak terpengaruh oleh tingkat cadangan kas", "D. Inflasi akan langsung meningkat pesat", "E. Suku bunga pinjaman akan mendadak turun"], answer: 1 },
-            { id: 18, type: "pg", text: "Sistem ekonomi yang menyerahkan seluruh kegiatan ekonomi kepada mekanisme pasar dan kebebasan individu dinamakan sistem ekonomi ...", options: ["A. Komando (Terpusat)", "B. Pasar (Liberal/Kapitalis)", "C. Tradisional", "D. Campuran", "E. Pancasila"], answer: 1 },
-            { id: 19, type: "pg", text: "Berikut yang tergolong dalam akun Riil (Permanen) yang dilaporkan dalam Neraca adalah ...", options: ["A. Pendapatan Jasa, Beban Gaji, Prive", "B. Kas, Piutang Usaha, Perlengkapan, Utang Usaha", "C. Beban Sewa, Pendapatan Diterima di Muka, Modal", "D. Beban Penyusutan, Akumulasi Penyusutan, Kas", "E. Penjualan, Beban Angkut, Retur Penjualan"], answer: 1 },
-            { id: 20, type: "pg", text: "Hukum Gossen I menjelaskan tentang fenomena konsumsi barang yang memenuhi prinsip ...", options: ["A. Utilitas total meningkat secara konstan", "B. Utilitas marginal menurun seiring bertambahnya konsumsi unit secara terus-menerus", "C. Kebutuhan beragam dipenuhi secara seimbang", "D. Konsumsi akan berhenti saat pendapatan habis", "E. Kepuasan konsumen tidak dapat diukur secara kuantitatif"], answer: 1 },
-            { id: 21, type: "pg", text: "Dalam neraca pembayaran, arus modal masuk berupa investasi asing langsung (FDI) dicatat dalam ...", options: ["A. Transaksi Berjalan - Neraca Perdagangan (Kredit)", "B. Transaksi Modal dan Finansial (Kredit)", "C. Transaksi Berjalan - Neraca Jasa (Debet)", "D. Transaksi Modal dan Finansial (Debet)", "E. Cadangan Devisa (Debet)"], answer: 1 },
-            { id: 22, type: "pg", text: "Kebijakan fiskal ekspansif yang dapat diambil pemerintah saat perekonomian mengalami resesi adalah ...", options: ["A. Menurunkan belanja pemerintah dan menaikkan pajak", "B. Menaikkan belanja pemerintah dan menurunkan tarif pajak", "C. Menjual surat utang negara dan menaikkan suku bunga", "D. Menurunkan belanja daerah dan memperketat anggaran", "E. Menghapus semua bantuan sosial masyarakat"], answer: 1 },
-            { id: 23, type: "pg", text: "Ketika MP = 0 (Marginal Product bernilai nol), maka kondisi Produk Total (TP) adalah ...", options: ["A. Bernilai nol", "B. Berada pada titik maksimum", "C. Sedang mengalami penurunan drastis", "D. Bernilai negatif", "E. Sama dengan Produk Rata-rata (AP)"], answer: 1 },
-            { id: 24, type: "pg", text: "Teori Perdagangan Internasional yang dikemukakan oleh David Ricardo dikenal dengan teori ...", options: ["A. Keunggulan Mutlak (Absolute Advantage)", "B. Keunggulan Komparatif (Comparative Advantage)", "C. HECKSCHER-OHLIN (H-O)", "D. Merkantilisme", "E. Competitive Advantage"], answer: 1 },
-            { id: 25, type: "pg", text: "Proses menutup akun-akun nominal (pendapatan, beban, ikhtisar laba rugi, dan prive) dilakukan pada akhir periode melalui ...", options: ["A. Jurnal Penyesuaian", "B. Jurnal Penutup", "C. Jurnal Pembalik", "D. Jurnal Khusus", "E. Neraca Saldo Setelah Penutupan"], answer: 1 },
+            { id: 1, type: "pg", text: "Kelangkaan sumber daya memaksa individu memilih alternatif terbaik. Pak Budi memiliki lahan sehektar kelapa sawit dan dihadapkan pada pilihan: menanam jagung (keuntungan Rp15 juta/bulan) atau menanam padi (keuntungan Rp12 juta/bulan). Jika ia memilih menanam jagung, berapakah biaya peluangnya?", options: ["A. Rp15.000.000,-", "B. Rp12.000.000,-", "C. Rp27.000.000,-", "D. Rp3.000.000,-", "E. Rp0,-"], answer: 1, explanation: "Biaya peluang (opportunity cost) adalah nilai kesempatan terbaik yang dikorbankan karena memilih alternatif lain. Karena Pak Budi memilih menanam jagung, kesempatan terbaik yang ditinggalkan/dikorbankan adalah keuntungan menanam padi sebesar Rp12.000.000,-." },
+            { id: 2, type: "pg", text: "Fungsi permintaan Qd = 100 - 2P dan fungsi penawaran Qs = -20 + 3P. Jika pemerintah mengenakan pajak sebesar t = 5 per unit, tentukan titik keseimbangan pasar setelah pajak (Pt, Qt)!", options: ["A. (24, 52)", "B. (27, 46)", "C. (25, 50)", "D. (20, 60)", "E. (22, 56)"], answer: 1, explanation: "Fungsi penawaran setelah pajak t = 5: Qs' = -20 + 3(P - 5) = -35 + 3P. Keseimbangan Qd = Qs' => 100 - 2P = -35 + 3P => 5P = 135 => Pt = 27. Subtitusi Pt=27 ke Qd: Qt = 100 - 2(27) = 46. Jadi titik keseimbangan (Pt, Qt) = (27, 46)." },
+            { id: 3, type: "pg", text: "Saat harga beras naik dari Rp10.000/kg menjadi Rp12.000/kg, jumlah beras yang diminta turun dari 100 kg menjadi 90 kg. Koefisien elastisitas permintaannya (Ed) adalah ...", options: ["A. 0,5 (Inelastis)", "B. 1,0 (Elastis Uniter)", "C. 2,0 (Elastis)", "D. 0,2 (Inelastis)", "E. 1,5 (Elastis)"], answer: 0, explanation: "Ed = (Delta Q / Delta P) x (P1 / Q1) = (-10 / 2.000) x (10.000 / 100) = |-0,5| = 0,5. Karena Ed < 1, maka sifatnya Inelastis." },
+            { id: 4, type: "pg", text: "Diketahui fungsi biaya total TC = 2Q^2 + 10Q + 50. Jika barang dijual pada harga pasar sempurna P = 50, berapa jumlah output (Q) yang harus diproduksi agar perusahaan mencapai laba maksimum?", options: ["A. 10 unit", "B. 20 unit", "C. 15 unit", "D. 8 unit", "E. 12 unit"], answer: 0, explanation: "Laba maksimum tercapai saat MR = MC atau P = MC pada pasar persaingan sempurna. MC = d(TC)/dQ = 4Q + 10. Karena P = 50, maka 4Q + 10 = 50 => 4Q = 40 => Q = 10 unit." },
+            { id: 5, type: "pg", text: "Data PDB suatu negara: PDB Rp5.000 T, Produk warga negara di luar negeri Rp400 T, Produk warga negara asing di dalam negeri Rp600 T, Penyusutan Rp200 T, Pajak Tidak Langsung Rp150 T. Besarnya Produk Nasional Neto (NNI) adalah ...", options: ["A. Rp4.600 T", "B. Rp4.450 T", "C. Rp4.800 T", "D. Rp5.200 T", "E. Rp4.250 T"], answer: 1, explanation: "GNP = PDB + Produk WN di LN - Produk WNA di DN = 5.000 + 400 - 600 = 4.800 T. NNP = GNP - Penyusutan = 4.800 - 200 = 4.600 T. NNI = NNP - Pajak Tidak Langsung = 4.600 - 150 = Rp4.450 T." },
+            { id: 6, type: "pg", text: "Indeks Harga Konsumen (IHK) bulan Januari 2026 adalah 115 dan IHK bulan Februari 2026 adalah 120. Berapakah laju inflasi bulan Februari 2026?", options: ["A. 4,17%", "B. 4,35%", "C. 5,00%", "D. 3,85%", "E. 4,50%"], answer: 0, explanation: "Laju Inflasi = ((IHK_Feb - IHK_Jan) / IHK_Jan) x 100% = ((120 - 115) / 115) x 100% = (5 / 115) x 100% = 4,17%." },
+            { id: 7, type: "pg", text: "Diketahui fungsi konsumsi C = 200 + 0,75Y. Jika pendapatan nasional (Y) sebesar Rp1.000 miliar, maka besarnya tabungan masyarakat (S) adalah ...", options: ["A. Rp50 miliar", "B. Rp100 miliar", "C. Rp150 miliar", "D. Rp200 miliar", "E. Rp250 miliar"], answer: 0, explanation: "Fungsi Tabungan: S = -a + (1 - b)Y = -200 + (1 - 0,75)Y = -200 + 0,25Y. Jika Y = 1.000, maka S = -200 + 0,25(1.000) = -200 + 250 = Rp50 miliar." },
+            { id: 8, type: "pg", text: "Suatu negara menetapkan kuota impor beras. Dampak langsung dari kebijakan pembatasan kuota impor tersebut di pasar domestik adalah ...", options: ["A. Harga beras di dalam negeri turun", "B. Jumlah barang beredar bertambah pesat", "C. Harga beras di dalam negeri naik dan produksi lokal terdorong", "D. Pendapatan negara dari tarif bea masuk meningkat pesat", "E. Konsumsi beras masyarakat meningkat pesat"], answer: 2, explanation: "Pembatasan kuota impor membatasi penawaran barang asing di dalam negeri sehingga penawaran berkurang. Hal ini menyebabkan harga beras lokal naik dan memberi dorongan bagi produsen dalam negeri untuk meningkatkan produksi." },
+            { id: 9, type: "pg", text: "Di bawah ini yang merupakan ciri utama dari struktur pasar persaingan sempurna adalah ...", options: ["A. Terdapat satu penjual menguasai pasar", "B. Barang berkarakteristik terdiferensiasi", "C. Penjual dan pembeli bertindak sebagai price taker", "D. Adanya hambatan tinggi untuk masuk pasar", "E. Penjual memiliki kekuatan penuh mengatur harga"], answer: 2, explanation: "Dalam pasar persaingan sempurna, jumlah penjual dan pembeli sangat banyak serta produk yang dijual bersifat homogen sempurna, sehingga individu tidak dapat memengaruhi harga (bertindak sebagai price taker)." },
+            { id: 10, type: "pg", text: "Laporan keuangan yang menyajikan posisi aset, kewajiban, dan ekuitas suatu perusahaan pada tanggal tertentu adalah ...", options: ["A. Laporan Laba Rugi", "B. Laporan Perubahan Ekuitas", "C. Neraca (Laporan Posisi Keuangan)", "D. Laporan Arus Kas", "E. Catatan atas Laporan Keuangan"], answer: 2, explanation: "Neraca (Laporan Posisi Keuangan) menyajikan rincian Aset, Kewajiban (Liabilitas), dan Ekuitas (Modal) pada suatu titik tanggal tertentu." },
+            { id: 11, type: "pg", text: "Perusahaan salon menerima pendapatan jasa tunai Rp3.000.000 dan sisa Rp2.000.000 dibayar bulan depan. Pengaruh transaksi ini pada persamaan dasar akuntansi adalah ...", options: ["A. Kas (+) Rp3.000.000, Piutang (+) Rp2.000.000, Modal (+) Rp5.000.000", "B. Kas (+) Rp5.000.000, Modal (+) Rp5.000.000", "C. Kas (+) Rp3.000.000, Utang (+) Rp2.000.000, Modal (+) Rp5.000.000", "D. Piutang (+) Rp5.000.000, Modal (+) Rp5.000.000", "E. Kas (+) Rp2.000.000, Piutang (+) Rp3.000.000, Modal (+) Rp5.000.000"], answer: 0, explanation: "Uang tunai menambah Kas Rp3.000.000, tagihan belum dibayar menambah Piutang Rp2.000.000, dan total hak pendapatan menambah Modal sebesar Rp5.000.000." },
+            { id: 12, type: "pg", text: "Pada tanggal 31 Desember 2025, perlengkapan yang tersisa bernilai Rp1.500.000 dari saldo awal di Neraca Saldo sebesar Rp4.000.000. Jurnal penyesuaian yang benar adalah ...", options: ["A. Beban Perlengkapan (D) Rp1.500.000 ; Perlengkapan (K) Rp1.500.000", "B. Beban Perlengkapan (D) Rp2.500.000 ; Perlengkapan (K) Rp2.500.000", "C. Perlengkapan (D) Rp2.500.000 ; Beban Perlengkapan (K) Rp2.500.000", "D. Beban Perlengkapan (D) Rp4.000.000 ; Perlengkapan (K) Rp4.000.000", "E. Kas (D) Rp2.500.000 ; Perlengkapan (K) Rp2.500.000"], answer: 1, explanation: "Perlengkapan yang terpakai menjadi beban = Rp4.000.000 - Rp1.500.000 = Rp2.500.000. Jurnalnya: Beban Perlengkapan di Debet Rp2.500.000 dan Perlengkapan di Kredit Rp2.500.000." },
+            { id: 13, type: "pg", text: "Pemberian subsidi oleh pemerintah kepada produsen pupuk sebesar Rp1.000 per kg akan mengakibatkan pergeseran kurva ...", options: ["A. Permintaan bergeser ke kanan", "B. Permintaan bergeser ke kiri", "C. Penawaran bergeser ke kanan bawah", "D. Penawaran bergeser ke kiri atas", "E. Penawaran dan permintaan tidak berubah"], answer: 2, explanation: "Subsidi menurunkan biaya produksi produsen, sehingga menstimulasi produsen untuk menawarkan lebih banyak barang pada tingkat harga tertentu. Kurva Penawaran bergeser ke kanan bawah." },
+            { id: 14, type: "pg", text: "Kebijakan moneter kontraktif yang dilakukan Bank Sentral untuk mengatasi inflasi tinggi adalah ...", options: ["A. Menurunkan suku bunga acuan", "B. Membeli surat-surat berharga di pasar terbuka", "C. Menurunkan cadangan kas minimum bank umum", "D. Menaikkan suku bunga acuan dan menjual SBI", "E. Mempermudah pemberian kredit kepada masyarakat"], answer: 3, explanation: "Kebijakan moneter kontraktif (tight money policy) bertujuan menyerap uang beredar dengan menaikkan suku bunga acuan (BI-Rate) dan menjual Surat Berharga Bank Indonesia (SBI)." },
+            { id: 15, type: "pg", text: "Jika Nilai Tukar Rupiah melemah terhadap Dolar AS (Depresiasi), maka dampak yang paling mungkin terjadi pada perdagangan internasional Indonesia adalah ...", options: ["A. Harga barang impor menjadi lebih murah", "B. Ekspor barang Indonesia menjadi lebih kompetitif di luar negeri", "C. Impor Indonesia meningkat pesat", "D. Neraca perdagangan langsung defisit", "E. Tidak ada dampak pada daya saing ekspor"], answer: 1, explanation: "Depresiasi rupiah membuat harga barang hasil produksi Indonesia relatif lebih murah bagi pembeli luar negeri yang memegang Dolar AS, sehingga mendorong daya saing ekspor." },
+            { id: 16, type: "pg", text: "Konsep pendapatan nasional yang dihitung berdasarkan jumlah pendapatan yang diterima oleh setiap anggota masyarakat yang benar-benar siap dibelanjakan dinamakan ...", options: ["A. Gross National Product (GNP)", "B. Net National Income (NNI)", "C. Personal Income (PI)", "D. Disposable Income (DI)", "E. Net Domestic Product (NDP)"], answer: 3, explanation: "Disposable Income (DI) adalah pendapatan perorangan dikurangi pajak langsung/penghasilan yang siap dibelanjakan untuk konsumsi maupun ditabung." },
+            { id: 17, type: "pg", text: "Bank Sentral menaikkan Cash Ratio (cadangan kas minimum) dari 5% menjadi 8%. Dampak kebijakan ini terhadap jumlah uang beredar (JUB) adalah ...", options: ["A. JUB akan bertambah karena bank lebih fleksibel", "B. JUB akan berkurang karena kemampuan kredit bank menurun", "C. JUB tidak terpengaruh oleh tingkat cadangan kas", "D. Inflasi akan langsung meningkat pesat", "E. Suku bunga pinjaman akan mendadak turun"], answer: 1, explanation: "Kenaikan cadangan kas minimum memaksa bank umum menahan lebih banyak dana di bank sentral, sehingga kemampuan menyalurkan kredit ke masyarakat berkurang dan JUB menurun." },
+            { id: 18, type: "pg", text: "Sistem ekonomi yang menyerahkan seluruh kegiatan ekonomi kepada mekanisme pasar dan kebebasan individu dinamakan sistem ekonomi ...", options: ["A. Komando (Terpusat)", "B. Pasar (Liberal/Kapitalis)", "C. Tradisional", "D. Campuran", "E. Pancasila"], answer: 1, explanation: "Sistem ekonomi pasar/liberal/kapitalis memberikan kebebasan penuh pada mekanisme pasar serta kepemilikan modal/individu." },
+            { id: 19, type: "pg", text: "Berikut yang tergolong dalam akun Riil (Permanen) yang dilaporkan dalam Neraca adalah ...", options: ["A. Pendapatan Jasa, Beban Gaji, Prive", "B. Kas, Piutang Usaha, Perlengkapan, Utang Usaha", "C. Beban Sewa, Pendapatan Diterima di Muka, Modal", "D. Beban Penyusutan, Akumulasi Penyusutan, Kas", "E. Penjualan, Beban Angkut, Retur Penjualan"], answer: 1, explanation: "Akun Riil terdiri dari Aset (Kas, Piutang, Perlengkapan), Liabilitas (Utang Usaha), dan Ekuitas yang saldonya dibawa berlanjut ke periode berikutnya pada Neraca." },
+            { id: 20, type: "pg", text: "Hukum Gossen I menjelaskan tentang fenomena konsumsi barang yang memenuhi prinsip ...", options: ["A. Utilitas total meningkat secara konstan", "B. Utilitas marginal menurun seiring bertambahnya konsumsi unit secara terus-menerus", "C. Kebutuhan beragam dipenuhi secara seimbang", "D. Konsumsi akan berhenti saat pendapatan habis", "E. Kepuasan konsumen tidak dapat diukur secara kuantitatif"], answer: 1, explanation: "Hukum Gossen I menyatakan bahwa pemenuhan kebutuhan atas satu jenis barang secara terus-menerus akan memberikan utilitas marjinal (tambahan kepuasan) yang semakin menurun." },
+            { id: 21, type: "pg", text: "Dalam neraca pembayaran, arus modal masuk berupa investasi asing langsung (FDI) dicatat dalam ...", options: ["A. Transaksi Berjalan - Neraca Perdagangan (Kredit)", "B. Transaksi Modal dan Finansial (Kredit)", "C. Transaksi Berjalan - Neraca Jasa (Debet)", "D. Transaksi Modal dan Finansial (Debet)", "E. Cadangan Devisa (Debet)"], answer: 1, explanation: "Investasi asing langsung (FDI) merupakan arus masuk modal finansial jangka panjang yang dicatat pada transaksi finansial/modal di sisi Kredit." },
+            { id: 22, type: "pg", text: "Kebijakan fiskal ekspansif yang dapat diambil pemerintah saat perekonomian mengalami resesi adalah ...", options: ["A. Menurunkan belanja pemerintah dan menaikkan pajak", "B. Menaikkan belanja pemerintah dan menurunkan tarif pajak", "C. Menjual surat utang negara dan menaikkan suku bunga", "D. Menurunkan belanja daerah dan memperketat anggaran", "E. Menghapus semua bantuan sosial masyarakat"], answer: 1, explanation: "Kebijakan fiskal ekspansif bertujuan menstimulasi perekonomian saat resesi dengan meningkatkan belanja pemerintah (G) dan memotong tarif pajak (T) untuk mendorong daya beli." },
+            { id: 23, type: "pg", text: "Ketika MP = 0 (Marginal Product bernilai nol), maka kondisi Produk Total (TP) adalah ...", options: ["A. Bernilai nol", "B. Berada pada titik maksimum", "C. Sedang mengalami penurunan drastis", "D. Bernilai negatif", "E. Sama dengan Produk Rata-rata (AP)"], answer: 1, explanation: "Sesuai hukum Law of Diminishing Returns, saat kurva Produk Marjinal memotong sumbu horizontal (MP = 0), maka Produk Total (TP) berada pada puncak maksimumnya." },
+            { id: 24, type: "pg", text: "Teori Perdagangan Internasional yang dikemukakan oleh David Ricardo dikenal dengan teori ...", options: ["A. Keunggulan Mutlak (Absolute Advantage)", "B. Keunggulan Komparatif (Comparative Advantage)", "C. HECKSCHER-OHLIN (H-O)", "D. Merkantilisme", "E. Competitive Advantage"], answer: 1, explanation: "David Ricardo mengemukakan teori Keunggulan Komparatif, di mana negara tetap dapat berdagang secara menguntungkan jika fokus memproduksi barang dengan biaya peluang terendah." },
+            { id: 25, type: "pg", text: "Proses menutup akun-akun nominal (pendapatan, beban, ikhtisar laba rugi, dan prive) dilakukan pada akhir periode melalui ...", options: ["A. Jurnal Penyesuaian", "B. Jurnal Penutup", "C. Jurnal Pembalik", "D. Jurnal Khusus", "E. Neraca Saldo Setelah Penutupan"], answer: 1, explanation: "Jurnal Penutup berfungsi menolkan saldo akun-akun sementara/nominal di akhir periode akuntansi." },
 
-            // Soal 26-30: Multiple Choice Multiple Answer (MCMA Checklist)
+            // Soal 26-30: MCMA Checklist
             {
                 id: 26,
                 type: "mcma",
@@ -288,7 +303,8 @@
                     "Peningkatan kenaikan tarif pajak barang",
                     "Bertambahnya jumlah produsen di dalam pasar"
                 ],
-                correctIndices: [0, 2, 4]
+                correctIndices: [0, 2, 4],
+                explanation: "Kurva penawaran bergeser ke kanan saat penawaran bertambah pada harga yang sama. Faktor pendorongnya meliputi teknologi efisien, pemberian subsidi, dan bertambahnya jumlah produsen. Peningkatan harga bahan baku dan pajak justru menggeser kurva ke kiri."
             },
             {
                 id: 27,
@@ -301,7 +317,8 @@
                     "Pemberian syarat kredit yang sangat ketat (Tight Credit)",
                     "Mendorong pelonggaran pemberian kredit"
                 ],
-                correctIndices: [0, 2, 4]
+                correctIndices: [0, 2, 4],
+                explanation: "Kebijakan moneter ekspansif menambah jumlah uang beredar melalui: membeli surat berharga SBN, menurunkan suku bunga acuan, dan melonggarkan syarat kredit."
             },
             {
                 id: 28,
@@ -314,7 +331,8 @@
                     "Impor mesin-mesin industri dari Jepang",
                     "Penerimaan transfer uang (remitansi) TKI dari luar negeri"
                 ],
-                correctIndices: [0, 2, 4]
+                correctIndices: [0, 2, 4],
+                explanation: "Transaksi Kredit mencatat penerimaan uang dari luar negeri ke dalam negeri. Contohnya: ekspor barang, penerimaan valas dari wisatawan asing, dan penerimaan transfer remitansi TKI."
             },
             {
                 id: 29,
@@ -327,7 +345,8 @@
                     "Beban Perlengkapan",
                     "Sewa Diterima di Muka"
                 ],
-                correctIndices: [0, 1, 3]
+                correctIndices: [0, 1, 3],
+                explanation: "Akun Nominal adalah akun yang disajikan dalam Laporan Laba Rugi dan ditutup pada akhir periode, yaitu seluruh kelompok Pendapatan dan Beban."
             },
             {
                 id: 30,
@@ -340,10 +359,11 @@
                     "Produsen memiliki sedikit kekuasaan mempengaruhi harga",
                     "Hambatan sangat mutlak untuk masuk ke dalam industri"
                 ],
-                correctIndices: [1, 2, 3]
+                correctIndices: [1, 2, 3],
+                explanation: "Pasar Monopolistis memiliki ciri: banyak penjual/pembeli, produk terdiferensiasi (berbeda merk/kemasan/kualitas), serta penjual memiliki sedikit kekuatan menentukan harga."
             },
 
-            // Soal 31-34: Menjodohkan (Matching)
+            // Soal 31-34: Menjodohkan
             {
                 id: 31,
                 type: "matching",
@@ -355,7 +375,8 @@
                     { item: "Permintaan Inelastis", correct: "Ed < 1" },
                     { item: "Permintaan Elastis", correct: "Ed > 1" }
                 ],
-                optionsPool: ["Ed = 1", "Ed = 0", "Ed = ~", "Ed < 1", "Ed > 1"]
+                optionsPool: ["Ed = 1", "Ed = 0", "Ed = ~", "Ed < 1", "Ed > 1"],
+                explanation: "Pasangan elastisitas presisi: Elastis Uniter (Ed = 1), Inelastis Sempurna (Ed = 0), Elastis Sempurna (Ed = ~ / tak hingga), Inelastis (Ed < 1), dan Elastis (Ed > 1)."
             },
             {
                 id: 32,
@@ -372,7 +393,8 @@
                     "Total output barang/jasa milik warga negara di manapun berada",
                     "Pendapatan yang siap dibelanjakan setelah dikurangi pajak langsung",
                     "Total pendapatan riil yang diterima oleh individu/perorangan"
-                ]
+                ],
+                explanation: "GDP berbasis wilayah negara, GNP berbasis kewarganegaraan, Personal Income adalah total pendapatan perseorangan, dan Disposable Income adalah pendapatan siap pakai."
             },
             {
                 id: 33,
@@ -389,7 +411,8 @@
                     "Pembatasan fisik jumlah maksimum unit barang impor",
                     "Bantuan dana pemerintah kepada eksportir agar mampu bersaing",
                     "Penjualan barang di pasar luar negeri lebih murah dibanding dalam negeri"
-                ]
+                ],
+                explanation: "Mekanisme instrumen perdagangan luar negeri disesuaikan dengan batasan kuota, tarif pajak bea masuk, insentif subsidi ekspor, dan diskriminasi harga dumping."
             },
             {
                 id: 34,
@@ -406,16 +429,17 @@
                     "Kas (+) dan Modal (+)",
                     "Kas (-) dan Utang Usaha (-)",
                     "Kas (-) dan Modal (-)"
-                ]
+                ],
+                explanation: "Analisis perubahan persamaan dasar akuntansi Aset = Liabilitas + Ekuitas berdasarkan karakteristik transaksi keuangan."
             },
 
-            // Soal 35-40: PG Lanjutan (A-E)
-            { id: 35, type: "pg", text: "Data Neraca Saldo: Kas Rp10 juta, Perlengkapan Rp3 juta, Beban Gaji Rp5 juta. Jika pada akhir periode gaji bulan Desember sebesar Rp1 juta belum dibayar, maka jurnal penyesuaian yang dibuat adalah ...", options: ["A. Beban Gaji (D) Rp1.000.000 ; Utang Gaji (K) Rp1.000.000", "B. Utang Gaji (D) Rp1.000.000 ; Beban Gaji (K) Rp1.000.000", "C. Beban Gaji (D) Rp5.000.000 ; Kas (K) Rp5.000.000", "D. Beban Gaji (D) Rp1.000.000 ; Kas (K) Rp1.000.000", "E. Kas (D) Rp1.000.000 ; Beban Gaji (K) Rp1.000.000"], answer: 0 },
-            { id: 36, type: "pg", text: "Laju inflasi yang berada pada kisaran 30% - 100% per tahun dan dapat mengganggu kestabilan perekonomian nasional dikategorikan sebagai ...", options: ["A. Inflasi Ringan", "B. Inflasi Sedang", "C. Inflasi Berat", "D. Hiperinflasi", "E. Inflasi Merayap"], answer: 2 },
-            { id: 37, type: "pg", text: "Fungsi konsumsi C = 500 + 0,8Y. Apabila pendapatan nasional naik sebesar Rp100 miliar, maka besarnya tambahan tabungan (Delta S) adalah ...", options: ["A. Rp80 miliar", "B. Rp20 miliar", "C. Rp100 miliar", "D. Rp500 miliar", "E. Rp580 miliar"], answer: 1 },
-            { id: 38, type: "pg", text: "Salah satu dampak negatif utama dari tingginya pengangguran friksional yang berkepanjangan bagi perekonomian adalah ...", options: ["A. Penurunan daya beli masyarakat dan potensi penurunan PDB riil", "B. Kenaikan laju inflasi secara drastis", "C. Meningkatnya cadangan devisa negara", "D. Penguatan nilai tukar mata uang nasional", "E. Penurunan beban anggaran bantuan sosial pemerintah"], answer: 0 },
-            { id: 39, type: "pg", text: "Di antara pilihan akun berikut, manakah akun yang diikhtisarkan ke dalam Jurnal Penutup pada akhir periode?", options: ["A. Kas, Beban Gaji, Modal", "B. Pendapatan Jasa, Beban Sewa, Prive", "C. Piutang, Peralatan, Akumulasi Penyusutan", "D. Utang Dagang, Kas, Pendapatan", "E. Modal, Perlengkapan, Beban Listrik"], answer: 1 },
-            { id: 40, type: "pg", text: "Apabila impor barang dan jasa suatu negara lebih besar daripada nilai ekspornya, maka posisi neraca perdagangannya mengalami ...", options: ["A. Surplus", "B. Defisit", "C. Seimbang", "D. Berimbang", "E. Ekuilibrium"], answer: 1 }
+            // Soal 35-40: PG Lanjutan
+            { id: 35, type: "pg", text: "Data Neraca Saldo: Kas Rp10 juta, Perlengkapan Rp3 juta, Beban Gaji Rp5 juta. Jika pada akhir periode gaji bulan Desember sebesar Rp1 juta belum dibayar, maka jurnal penyesuaian yang dibuat adalah ...", options: ["A. Beban Gaji (D) Rp1.000.000 ; Utang Gaji (K) Rp1.000.000", "B. Utang Gaji (D) Rp1.000.000 ; Beban Gaji (K) Rp1.000.000", "C. Beban Gaji (D) Rp5.000.000 ; Kas (K) Rp5.000.000", "D. Beban Gaji (D) Rp1.000.000 ; Kas (K) Rp1.000.000", "E. Kas (D) Rp1.000.000 ; Beban Gaji (K) Rp1.000.000"], answer: 0, explanation: "Gaji yang belum dibayar merupakan kewajiban/utang gaji akhir periode. Jurnal penyesuaiannya menambah Beban Gaji di Debet Rp1.000.000 dan menambah Utang Gaji di Kredit Rp1.000.000." },
+            { id: 36, type: "pg", text: "Laju inflasi yang berada pada kisaran 30% - 100% per tahun dan dapat mengganggu kestabilan perekonomian nasional dikategorikan sebagai ...", options: ["A. Inflasi Ringan", "B. Inflasi Sedang", "C. Inflasi Berat", "D. Hiperinflasi", "E. Inflasi Merayap"], answer: 2, explanation: "Penggolongan tingkat keparahan inflasi: Ringan (<10%), Sedang (10%-30%), Berat (30%-100%), dan Hiperinflasi (>100% per tahun)." },
+            { id: 37, type: "pg", text: "Fungsi konsumsi C = 500 + 0,8Y. Apabila pendapatan nasional naik sebesar Rp100 miliar, maka besarnya tambahan tabungan (Delta S) adalah ...", options: ["A. Rp80 miliar", "B. Rp20 miliar", "C. Rp100 miliar", "D. Rp500 miliar", "E. Rp580 miliar"], answer: 1, explanation: "MPC = 0,8, sehingga MPS = 1 - MPC = 1 - 0,8 = 0,2. Tambahan tabungan Delta S = MPS x Delta Y = 0,2 x 100 miliar = Rp20 miliar." },
+            { id: 38, type: "pg", text: "Salah satu dampak negatif utama dari tingginya pengangguran friksional yang berkepanjangan bagi perekonomian adalah ...", options: ["A. Penurunan daya beli masyarakat dan potensi penurunan PDB riil", "B. Kenaikan laju inflasi secara drastis", "C. Meningkatnya cadangan devisa negara", "D. Penguatan nilai tukar mata uang nasional", "E. Penurunan beban anggaran bantuan sosial pemerintah"], answer: 0, explanation: "Pengangguran mengurangi arus pendapatan masyarakat, yang secara langsung menurunkan tingkat konsumsi/daya beli dan berpotensi menurunkan output PDB riil." },
+            { id: 39, type: "pg", text: "Di antara pilihan akun berikut, manakah akun yang diikhtisarkan ke dalam Jurnal Penutup pada akhir periode?", options: ["A. Kas, Beban Gaji, Modal", "B. Pendapatan Jasa, Beban Sewa, Prive", "C. Piutang, Peralatan, Akumulasi Penyusutan", "D. Utang Dagang, Kas, Pendapatan", "E. Modal, Perlengkapan, Beban Listrik"], answer: 1, explanation: "Akun yang ditutup pada akhir periode meliputi Pendapatan, Beban, dan Prive." },
+            { id: 40, type: "pg", text: "Apabila impor barang dan jasa suatu negara lebih besar daripada nilai ekspornya, maka posisi neraca perdagangannya mengalami ...", options: ["A. Surplus", "B. Defisit", "C. Seimbang", "D. Berimbang", "E. Ekuilibrium"], answer: 1, explanation: "Neraca perdagangan mengalami defisit apabila nilai Impor (M) lebih besar daripada nilai Ekspor (X)." }
         ];
 
         let questionsData = [];
@@ -852,6 +876,83 @@
             }
         }
 
+        function renderPembahasan() {
+            const container = document.getElementById('pembahasanContainer');
+            container.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                let isCorrect = false;
+                let userAnsText = "-";
+                let keyText = "";
+
+                if (q.type === 'pg') {
+                    isCorrect = (userAns === q.answer);
+                    userAnsText = (userAns !== null && userAns !== undefined) ? q.options[userAns] : "Tidak Dijawab";
+                    keyText = q.options[q.answer];
+                }
+                else if (q.type === 'mcma') {
+                    if (Array.isArray(userAns)) {
+                        isCorrect = q.correctIndices.length === userAns.length && 
+                                    q.correctIndices.every(val => userAns.includes(val));
+                        userAnsText = userAns.length > 0 ? userAns.map(i => q.options[i]).join("<br>• ") : "Tidak Dijawab";
+                        if (userAnsText !== "Tidak Dijawab") userAnsText = "• " + userAnsText;
+                    } else {
+                        userAnsText = "Tidak Dijawab";
+                    }
+                    keyText = "• " + q.correctIndices.map(i => q.options[i]).join("<br>• ");
+                }
+                else if (q.type === 'matching') {
+                    if (userAns && typeof userAns === 'object') {
+                        let matched = true;
+                        let listArr = [];
+                        q.pairs.forEach((pair, pairIdx) => {
+                            const val = userAns[pairIdx] || "Belum Dipilih";
+                            if (val !== pair.correct) matched = false;
+                            listArr.push(`${pair.item} ➔ <b>${val}</b>`);
+                        });
+                        isCorrect = matched && Object.keys(userAns).length === q.pairs.length;
+                        userAnsText = listArr.join("<br>");
+                    } else {
+                        userAnsText = "Tidak Dijawab";
+                    }
+                    keyText = q.pairs.map(p => `${p.item} ➔ <b>${p.correct}</b>`).join("<br>");
+                }
+
+                const card = document.createElement('div');
+                card.className = `p-5 rounded-xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/30' : 'border-rose-200 bg-rose-50/30'} space-y-3`;
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between border-b pb-2">
+                        <span class="font-bold text-sm text-slate-700">Soal No. ${idx + 1}</span>
+                        <span class="text-xs font-bold px-3 py-1 rounded-full ${isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                            ${isCorrect ? '<i class="fas fa-check mr-1"></i> Benar' : '<i class="fas fa-times mr-1"></i> Salah'}
+                        </span>
+                    </div>
+
+                    <div class="text-sm font-medium text-slate-800 leading-relaxed">${q.text}</div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
+                        <div class="p-3 bg-white rounded-lg border border-slate-200">
+                            <span class="block font-semibold text-slate-500 mb-1">Jawaban Anda:</span>
+                            <div class="${isCorrect ? 'text-emerald-700 font-medium' : 'text-rose-700 font-medium'}">${userAnsText}</div>
+                        </div>
+                        <div class="p-3 bg-white rounded-lg border border-slate-200">
+                            <span class="block font-semibold text-slate-500 mb-1">Kunci Jawaban:</span>
+                            <div class="text-indigo-700 font-medium">${keyText}</div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-indigo-50/70 border border-indigo-100 rounded-lg text-xs text-indigo-900 leading-relaxed">
+                        <strong class="block text-indigo-700 font-semibold mb-1"><i class="fas fa-lightbulb text-amber-500 mr-1"></i> Pembahasan:</strong>
+                        ${q.explanation}
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
         function submitQuiz() {
             clearInterval(timerInterval);
 
@@ -876,7 +977,7 @@
                                 allMatched = false;
                             }
                         });
-                        if (allMatched) scoreCount++;
+                        if (allMatched && Object.keys(userAns).length === q.pairs.length) scoreCount++;
                     }
                 }
             });
@@ -894,6 +995,9 @@
             document.getElementById('resKelasAbsen').innerText = `${studentData.kelas} / Absen ${studentData.absen}`;
             document.getElementById('resSkor').innerText = `${scoreCount} / ${questionsData.length}`;
             document.getElementById('resNilai').innerText = percentage;
+
+            // Render Pembahasan Soal
+            renderPembahasan();
 
             if (studentData.scriptUrl) {
                 const payload = {
