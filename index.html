@@ -53,7 +53,7 @@
                     <i class="fas fa-user-graduate"></i>
                 </div>
                 <h2 class="text-xl font-bold text-slate-800">Identitas Peserta Tryout</h2>
-                <p class="text-xs text-slate-500 mt-1">Silakan tonton video penjelasan dari Bapak Dhoni Al Ahmed, S.Pd. terlebih dahulu, lalu isi data diri Anda untuk memulai ulangan.</p>
+                <p class="text-xs text-slate-500 mt-1">Silakan tonton video penjelasannya dari Bapak Dhoni Al Ahmed, S.Pd. terlebih dahulu, lalu isi data diri Anda untuk memulai ulangan.</p>
             </div>
 
             <!-- Pesan Blokir Pengerjaan Ulang -->
@@ -243,17 +243,17 @@
             <div class="flex justify-between items-center border-b pb-3">
                 <h3 class="font-bold text-slate-800 text-base flex items-center space-x-2">
                     <i class="fas fa-user-shield text-indigo-600"></i>
-                    <span id="tokenModalTitle">Verifikasi Token Guru</span>
+                    <span id="tokenModalTitle">Verifikasi Password Guru</span>
                 </h3>
                 <button onclick="closeTokenModal()" class="text-slate-400 hover:text-slate-600 text-sm">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <p id="tokenModalDesc" class="text-xs text-slate-500">
-                Masukkan password guru untuk verifikasi.
+                Masukkan password untuk melanjutkan.
             </p>
             <div>
-                <input type="password" id="inputTokenGuru" placeholder="Masukkan Password GURU2026" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm outline-none">
+                <input type="password" id="inputTokenGuru" placeholder="Masukkan Password Guru" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm outline-none">
                 <p id="tokenErrorMsg" class="hidden text-xs text-rose-600 font-semibold mt-1">Password salah! Akses ditolak.</p>
             </div>
             <div class="flex justify-end space-x-2 pt-2">
@@ -270,7 +270,7 @@
     <script>
         const SECRET_TEACHER_TOKEN = "GURU2026";
         const TOTAL_DURATION_SECONDS = 90 * 60; // 90 Menit
-        let tokenPurpose = "reset"; // 'reset' atau 'pembahasan'
+        let tokenPurpose = "reset";
 
         // Bank 40 Soal HOTS Ekonomi
         const rawQuestionsData = [
@@ -296,7 +296,7 @@
             { id: 20, type: "pg", text: "Hukum Gossen I menjelaskan tentang fenomena konsumsi barang yang memenuhi prinsip ...", options: ["A. Utilitas total meningkat secara konstan", "B. Utilitas marginal menurun seiring bertambahnya konsumsi unit secara terus-menerus", "C. Kebutuhan beragam dipenuhi secara seimbang", "D. Konsumsi akan berhenti saat pendapatan habis", "E. Kepuasan konsumen tidak dapat diukur secara kuantitatif"], answer: 1, explanation: "Hukum Gossen I menyatakan bahwa pemenuhan kebutuhan atas satu jenis barang secara terus-menerus akan memberikan utilitas marjinal (tambahan kepuasan) yang semakin menurun." },
             { id: 21, type: "pg", text: "Dalam neraca pembayaran, arus modal masuk berupa investasi asing langsung (FDI) dicatat dalam ...", options: ["A. Transaksi Berjalan - Neraca Perdagangan (Kredit)", "B. Transaksi Modal dan Finansial (Kredit)", "C. Transaksi Berjalan - Neraca Jasa (Debet)", "D. Transaksi Modal dan Finansial (Debet)", "E. Cadangan Devisa (Debet)"], answer: 1, explanation: "Investasi asing langsung (FDI) merupakan arus masuk modal finansial jangka panjang yang dicatat pada transaksi finansial/modal di sisi Kredit." },
             { id: 22, type: "pg", text: "Kebijakan fiskal ekspansif yang dapat diambil pemerintah saat perekonomian mengalami resesi adalah ...", options: ["A. Menurunkan belanja pemerintah dan menaikkan pajak", "B. Menaikkan belanja pemerintah dan menurunkan tarif pajak", "C. Menjual surat utang negara dan menaikkan suku bunga", "D. Menurunkan belanja daerah dan memperketat anggaran", "E. Menghapus semua bantuan sosial masyarakat"], answer: 1, explanation: "Kebijakan fiskal ekspansif bertujuan menstimulasi perekonomian saat resesi dengan meningkatkan belanja pemerintah (G) dan memotong tarif pajak (T) untuk mendorong daya beli." },
-            { id: 23, type: "pg", text: "Ketika MP = 0 (Marginal Product bernilai nol), maka kondisi Produk Total (TP) adalah ...", options: ["A. Bernilai nol", "B. Berada pada titik maksimum", "C. Sedang mengalami penurunan drastis", "D. Bernilai negatif", "E. Sama dengan Produk Rata-rata (AP)"], answer: 1, explanation: "Sesuai hukum Law of Diminishing Returns, saat kurva Produk Marjinal memotong sumbu horizontal (MP = 0), maka Produk Total (TP) berada pada puncak maksimumnya." },
+            { id: 23, type: "pg", text: "Law of Diminishing Returns, ketika MP = 0 (Marginal Product bernilai nol), maka kondisi Produk Total (TP) adalah ...", options: ["A. Bernilai nol", "B. Berada pada titik maksimum", "C. Sedang mengalami penurunan drastis", "D. Bernilai negatif", "E. Sama dengan Produk Rata-rata (AP)"], answer: 1, explanation: "Sesuai hukum Law of Diminishing Returns, saat kurva Produk Marjinal memotong sumbu horizontal (MP = 0), maka Produk Total (TP) berada pada puncak maksimumnya." },
             { id: 24, type: "pg", text: "Teori Perdagangan Internasional yang dikemukakan oleh David Ricardo dikenal dengan teori ...", options: ["A. Keunggulan Mutlak (Absolute Advantage)", "B. Keunggulan Komparatif (Comparative Advantage)", "C. HECKSCHER-OHLIN (H-O)", "D. Merkantilisme", "E. Competitive Advantage"], answer: 1, explanation: "David Ricardo mengemukakan teori Keunggulan Komparatif, di mana negara tetap dapat berdagang secara menguntungkan jika fokus memproduksi barang dengan biaya peluang terendah." },
             { id: 25, type: "pg", text: "Proses menutup akun-akun nominal (pendapatan, beban, ikhtisar laba rugi, dan prive) dilakukan pada akhir periode melalui ...", options: ["A. Jurnal Penyesuaian", "B. Jurnal Penutup", "C. Jurnal Pembalik", "D. Jurnal Khusus", "E. Neraca Saldo Setelah Penutupan"], answer: 1, explanation: "Jurnal Penutup berfungsi menolkan saldo akun-akun sementara/nominal di akhir periode akuntansi." },
 
@@ -437,7 +437,7 @@
                     "Kas (-) dan Perlengkapan (+)",
                     "Kas (+) dan Modal (+)",
                     "Kas (-) dan Utang Usaha (-)",
-                    "Kas (-) dan Utang Usaha (-)"
+                    "Kas (-) dan Modal (-)"
                 ],
                 explanation: "Analisis perubahan persamaan dasar akuntansi Aset = Liabilitas + Ekuitas berdasarkan karakteristik transaksi keuangan."
             },
@@ -536,10 +536,10 @@
             
             if (purpose === "pembahasan") {
                 document.getElementById('tokenModalTitle').innerText = "Kunci & Pembahasan Guru";
-                document.getElementById('tokenModalDesc').innerText = "Masukkan password GURU2026 untuk melihat kunci jawaban dan pembahasan detail.";
+                document.getElementById('tokenModalDesc').innerText = "Masukkan password pengawas/guru untuk membuka pembahasan.";
             } else {
-                document.getElementById('tokenModalTitle').innerText = "Verifikasi Token Guru";
-                document.getElementById('tokenModalDesc').innerText = "Masukkan password khusus pengawas/guru untuk memberikan izin pengerjaan ulang pada siswa ini.";
+                document.getElementById('tokenModalTitle').innerText = "Verifikasi Password Guru";
+                document.getElementById('tokenModalDesc').innerText = "Masukkan password pengawas/guru untuk memberikan izin pengerjaan ulang.";
             }
 
             document.getElementById('tokenModal').classList.remove('hidden');
