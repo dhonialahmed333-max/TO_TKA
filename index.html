@@ -64,7 +64,7 @@
                         <strong class="font-semibold block mb-1">Akses Ditolak / Sudah Mengerjakan</strong>
                         <span id="blockedMessage">Siswa dengan Kelas dan Nomor Absen ini tercatat telah menyelesaikan ulangan di Google Sheets.</span>
                         <div class="mt-3">
-                            <button onclick="openTokenModal()" class="text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-md transition shadow-sm inline-flex items-center space-x-1">
+                            <button onclick="openTokenModal('reset')" class="text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-md transition shadow-sm inline-flex items-center space-x-1">
                                 <i class="fas fa-key text-[10px]"></i>
                                 <span>Buka Akses Ulang (Khusus Guru)</span>
                             </button>
@@ -176,7 +176,7 @@
             </div>
         </div>
 
-        <!-- 3. Halaman Hasil Ringkas + Pembahasan Detail -->
+        <!-- 3. Halaman Hasil Ringkas + Pembahasan Detail (Terkunci) -->
         <div id="resultSection" class="hidden max-w-4xl mx-auto space-y-6">
             <!-- Card Skor Hasil -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 text-center">
@@ -209,10 +209,18 @@
                     <i class="fas fa-cloud-upload-alt text-base"></i>
                     <span>Status: Data Jawaban Berhasil Terkirim</span>
                 </div>
+
+                <!-- Tombol Buka Kunci Pembahasan -->
+                <div class="mt-6 pt-4 border-t border-slate-100 flex justify-center">
+                    <button id="btnUnlockPembahasan" onclick="openTokenModal('pembahasan')" class="bg-amber-500 hover:bg-amber-600 text-white font-medium px-5 py-2.5 rounded-xl text-sm shadow-sm transition inline-flex items-center space-x-2">
+                        <i class="fas fa-lock"></i>
+                        <span>Buka Kunci Jawaban & Pembahasan</span>
+                    </button>
+                </div>
             </div>
 
-            <!-- Kontainer Pembahasan Soal -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+            <!-- Kontainer Pembahasan Soal (Terkunci secara Default) -->
+            <div id="pembahasanSection" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
                 <div class="border-b pb-4 flex items-center justify-between">
                     <h3 class="text-lg font-bold text-slate-800 flex items-center space-x-2">
                         <i class="fas fa-book-open text-indigo-600"></i>
@@ -222,7 +230,7 @@
                 </div>
 
                 <div id="pembahasanContainer" class="space-y-6">
-                    <!-- Pembahasan tiap nomor dipopulasikan lewat JS -->
+                    <!-- Pembahasan dipopulasikan lewat JS setelah password benar -->
                 </div>
             </div>
         </div>
@@ -235,18 +243,18 @@
             <div class="flex justify-between items-center border-b pb-3">
                 <h3 class="font-bold text-slate-800 text-base flex items-center space-x-2">
                     <i class="fas fa-user-shield text-indigo-600"></i>
-                    <span>Verifikasi Token Guru</span>
+                    <span id="tokenModalTitle">Verifikasi Token Guru</span>
                 </h3>
                 <button onclick="closeTokenModal()" class="text-slate-400 hover:text-slate-600 text-sm">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <p class="text-xs text-slate-500">
-                Masukkan token khusus pengawas/guru untuk memberikan izin pengerjaan ulang pada siswa ini.
+            <p id="tokenModalDesc" class="text-xs text-slate-500">
+                Masukkan password guru untuk verifikasi.
             </p>
             <div>
-                <input type="password" id="inputTokenGuru" placeholder="Masukkan Token Guru" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm outline-none">
-                <p id="tokenErrorMsg" class="hidden text-xs text-rose-600 font-semibold mt-1">Token salah! Akses ditolak.</p>
+                <input type="password" id="inputTokenGuru" placeholder="Masukkan Password GURU2026" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm outline-none">
+                <p id="tokenErrorMsg" class="hidden text-xs text-rose-600 font-semibold mt-1">Password salah! Akses ditolak.</p>
             </div>
             <div class="flex justify-end space-x-2 pt-2">
                 <button onclick="closeTokenModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition">
@@ -262,13 +270,14 @@
     <script>
         const SECRET_TEACHER_TOKEN = "GURU2026";
         const TOTAL_DURATION_SECONDS = 90 * 60; // 90 Menit
+        let tokenPurpose = "reset"; // 'reset' atau 'pembahasan'
 
-        // Bank 40 Soal HOTS Ekonomi Lengkap + Pembahasan
+        // Bank 40 Soal HOTS Ekonomi
         const rawQuestionsData = [
             { id: 1, type: "pg", text: "Kelangkaan sumber daya memaksa individu memilih alternatif terbaik. Pak Budi memiliki lahan sehektar kelapa sawit dan dihadapkan pada pilihan: menanam jagung (keuntungan Rp15 juta/bulan) atau menanam padi (keuntungan Rp12 juta/bulan). Jika ia memilih menanam jagung, berapakah biaya peluangnya?", options: ["A. Rp15.000.000,-", "B. Rp12.000.000,-", "C. Rp27.000.000,-", "D. Rp3.000.000,-", "E. Rp0,-"], answer: 1, explanation: "Biaya peluang (opportunity cost) adalah nilai kesempatan terbaik yang dikorbankan karena memilih alternatif lain. Karena Pak Budi memilih menanam jagung, kesempatan terbaik yang ditinggalkan/dikorbankan adalah keuntungan menanam padi sebesar Rp12.000.000,-." },
             { id: 2, type: "pg", text: "Fungsi permintaan Qd = 100 - 2P dan fungsi penawaran Qs = -20 + 3P. Jika pemerintah mengenakan pajak sebesar t = 5 per unit, tentukan titik keseimbangan pasar setelah pajak (Pt, Qt)!", options: ["A. (24, 52)", "B. (27, 46)", "C. (25, 50)", "D. (20, 60)", "E. (22, 56)"], answer: 1, explanation: "Fungsi penawaran setelah pajak t = 5: Qs' = -20 + 3(P - 5) = -35 + 3P. Keseimbangan Qd = Qs' => 100 - 2P = -35 + 3P => 5P = 135 => Pt = 27. Subtitusi Pt=27 ke Qd: Qt = 100 - 2(27) = 46. Jadi titik keseimbangan (Pt, Qt) = (27, 46)." },
             { id: 3, type: "pg", text: "Saat harga beras naik dari Rp10.000/kg menjadi Rp12.000/kg, jumlah beras yang diminta turun dari 100 kg menjadi 90 kg. Koefisien elastisitas permintaannya (Ed) adalah ...", options: ["A. 0,5 (Inelastis)", "B. 1,0 (Elastis Uniter)", "C. 2,0 (Elastis)", "D. 0,2 (Inelastis)", "E. 1,5 (Elastis)"], answer: 0, explanation: "Ed = (Delta Q / Delta P) x (P1 / Q1) = (-10 / 2.000) x (10.000 / 100) = |-0,5| = 0,5. Karena Ed < 1, maka sifatnya Inelastis." },
-            { id: 4, type: "pg", text: "Diketahui fungsi biaya total TC = 2Q^2 + 10Q + 50. Jika barang dijual pada harga pasar sempurna P = 50, berapa jumlah output (Q) yang harus diproduksi agar perusahaan mencapai laba maksimum?", options: ["A. 10 unit", "B. 20 unit", "C. 15 unit", "D. 8 unit", "E. 12 unit"], answer: 0, explanation: "Laba maksimum tercapai saat MR = MC atau P = MC pada pasar persaingan sempurna. MC = d(TC)/dQ = 4Q + 10. Karena P = 50, maka 4Q + 10 = 50 => 4Q = 40 => Q = 10 unit." },
+            { id: 4, type: "pg", text: "Diketahui fungsi biaya total TC = 2Q² + 10Q + 50. Jika barang dijual pada harga pasar sempurna P = 50, berapa jumlah output (Q) yang harus diproduksi agar perusahaan mencapai laba maksimum?", options: ["A. 10 unit", "B. 20 unit", "C. 15 unit", "D. 8 unit", "E. 12 unit"], answer: 0, explanation: "Laba maksimum tercapai saat MR = MC atau P = MC pada pasar persaingan sempurna. MC = d(TC)/dQ = 4Q + 10. Karena P = 50, maka 4Q + 10 = 50 => 4Q = 40 => Q = 10 unit." },
             { id: 5, type: "pg", text: "Data PDB suatu negara: PDB Rp5.000 T, Produk warga negara di luar negeri Rp400 T, Produk warga negara asing di dalam negeri Rp600 T, Penyusutan Rp200 T, Pajak Tidak Langsung Rp150 T. Besarnya Produk Nasional Neto (NNI) adalah ...", options: ["A. Rp4.600 T", "B. Rp4.450 T", "C. Rp4.800 T", "D. Rp5.200 T", "E. Rp4.250 T"], answer: 1, explanation: "GNP = PDB + Produk WN di LN - Produk WNA di DN = 5.000 + 400 - 600 = 4.800 T. NNP = GNP - Penyusutan = 4.800 - 200 = 4.600 T. NNI = NNP - Pajak Tidak Langsung = 4.600 - 150 = Rp4.450 T." },
             { id: 6, type: "pg", text: "Indeks Harga Konsumen (IHK) bulan Januari 2026 adalah 115 dan IHK bulan Februari 2026 adalah 120. Berapakah laju inflasi bulan Februari 2026?", options: ["A. 4,17%", "B. 4,35%", "C. 5,00%", "D. 3,85%", "E. 4,50%"], answer: 0, explanation: "Laju Inflasi = ((IHK_Feb - IHK_Jan) / IHK_Jan) x 100% = ((120 - 115) / 115) x 100% = (5 / 115) x 100% = 4,17%." },
             { id: 7, type: "pg", text: "Diketahui fungsi konsumsi C = 200 + 0,75Y. Jika pendapatan nasional (Y) sebesar Rp1.000 miliar, maka besarnya tabungan masyarakat (S) adalah ...", options: ["A. Rp50 miliar", "B. Rp100 miliar", "C. Rp150 miliar", "D. Rp200 miliar", "E. Rp250 miliar"], answer: 0, explanation: "Fungsi Tabungan: S = -a + (1 - b)Y = -200 + (1 - 0,75)Y = -200 + 0,25Y. Jika Y = 1.000, maka S = -200 + 0,25(1.000) = -200 + 250 = Rp50 miliar." },
@@ -304,7 +313,7 @@
                     "Bertambahnya jumlah produsen di dalam pasar"
                 ],
                 correctIndices: [0, 2, 4],
-                explanation: "Kurva penawaran bergeser ke kanan saat penawaran bertambah pada harga yang sama. Faktor pendorongnya meliputi teknologi efisien, pemberian subsidi, dan bertambahnya jumlah produsen. Peningkatan harga bahan baku dan pajak justru menggeser kurva ke kiri."
+                explanation: "Kurva penawaran bergeser ke kanan saat penawaran bertambah pada harga yang sama. Faktor pendorongnya meliputi teknologi efisien, pemberian subsidi, dan bertambahnya jumlah produsen."
             },
             {
                 id: 27,
@@ -428,7 +437,7 @@
                     "Kas (-) dan Perlengkapan (+)",
                     "Kas (+) dan Modal (+)",
                     "Kas (-) dan Utang Usaha (-)",
-                    "Kas (-) dan Modal (-)"
+                    "Kas (-) dan Utang Usaha (-)"
                 ],
                 explanation: "Analisis perubahan persamaan dasar akuntansi Aset = Liabilitas + Ekuitas berdasarkan karakteristik transaksi keuangan."
             },
@@ -449,7 +458,6 @@
         let timerInterval = null;
         let startTime = null;
 
-        // Fungsi Acak Soal (Fisher-Yates Shuffle)
         function shuffleArray(array) {
             const arr = JSON.parse(JSON.stringify(array));
             for (let i = arr.length - 1; i > 0; i--) {
@@ -521,9 +529,19 @@
         document.getElementById('kelasSiswa').addEventListener('change', checkIdentityAvailability);
         document.getElementById('absenSiswa').addEventListener('change', checkIdentityAvailability);
 
-        function openTokenModal() {
+        function openTokenModal(purpose = "reset") {
+            tokenPurpose = purpose;
             document.getElementById('inputTokenGuru').value = '';
             document.getElementById('tokenErrorMsg').classList.add('hidden');
+            
+            if (purpose === "pembahasan") {
+                document.getElementById('tokenModalTitle').innerText = "Kunci & Pembahasan Guru";
+                document.getElementById('tokenModalDesc').innerText = "Masukkan password GURU2026 untuk melihat kunci jawaban dan pembahasan detail.";
+            } else {
+                document.getElementById('tokenModalTitle').innerText = "Verifikasi Token Guru";
+                document.getElementById('tokenModalDesc').innerText = "Masukkan password khusus pengawas/guru untuk memberikan izin pengerjaan ulang pada siswa ini.";
+            }
+
             document.getElementById('tokenModal').classList.remove('hidden');
         }
 
@@ -537,17 +555,22 @@
             const absen = document.getElementById('absenSiswa').value;
 
             if (tokenInput === SECRET_TEACHER_TOKEN) {
-                localStorage.removeItem(`completed_quiz_${kelas}_${absen}`);
-                localStorage.removeItem('active_quiz_session');
-                
                 closeTokenModal();
-                document.getElementById('blockedAlert').classList.add('hidden');
-                
-                const btnStart = document.getElementById('btnStartQuiz');
-                btnStart.disabled = false;
-                btnStart.classList.remove('opacity-50', 'cursor-not-allowed');
-                
-                alert(`Akses berhasil dibuka oleh Guru! Siswa Kelas ${kelas} Absen ${absen} diperbolehkan mengerjakan ulang.`);
+
+                if (tokenPurpose === "pembahasan") {
+                    renderPembahasan();
+                    document.getElementById('pembahasanSection').classList.remove('hidden');
+                    document.getElementById('btnUnlockPembahasan').classList.add('hidden');
+                    alert("Kunci jawaban dan pembahasan detail berhasil dibuka!");
+                } else {
+                    localStorage.removeItem(`completed_quiz_${kelas}_${absen}`);
+                    localStorage.removeItem('active_quiz_session');
+                    document.getElementById('blockedAlert').classList.add('hidden');
+                    const btnStart = document.getElementById('btnStartQuiz');
+                    btnStart.disabled = false;
+                    btnStart.classList.remove('opacity-50', 'cursor-not-allowed');
+                    alert(`Akses berhasil dibuka oleh Guru! Siswa Kelas ${kelas} Absen ${absen} diperbolehkan mengerjakan ulang.`);
+                }
             } else {
                 document.getElementById('tokenErrorMsg').classList.remove('hidden');
             }
@@ -612,7 +635,6 @@
             studentData = { nama, kelas, absen, scriptUrl };
             startTime = Date.now();
             
-            // Acak urutan soal saat mulai quiz baru
             questionsData = shuffleArray(rawQuestionsData);
             userAnswers = new Array(questionsData.length).fill(null);
 
@@ -995,9 +1017,6 @@
             document.getElementById('resKelasAbsen').innerText = `${studentData.kelas} / Absen ${studentData.absen}`;
             document.getElementById('resSkor').innerText = `${scoreCount} / ${questionsData.length}`;
             document.getElementById('resNilai').innerText = percentage;
-
-            // Render Pembahasan Soal
-            renderPembahasan();
 
             if (studentData.scriptUrl) {
                 const payload = {
