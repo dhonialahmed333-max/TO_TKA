@@ -40,9 +40,9 @@
         <!-- 1. Form Identitas Siswa + Pemutar Video -->
         <div id="identitasSection" class="max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
             
-            <!-- Video Instruksi -->
-            <div class="mb-5 rounded-xl overflow-hidden shadow-sm border border-slate-200 bg-black">
-                <video controls playsinline class="w-full h-auto rounded-xl">
+            <!-- Video Instruksi (Autoplay & Loop) -->
+            <div class="mb-5 rounded-xl overflow-hidden shadow-sm border border-slate-200 bg-black relative">
+                <video id="introVideo" controls playsinline autoplay loop class="w-full h-auto rounded-xl">
                     <source src="video.mp4" type="video/mp4">
                     Browser Anda tidak mendukung pemutar video.
                 </video>
@@ -101,6 +101,12 @@
                             <option value="" disabled selected>Pilih Absen</option>
                         </select>
                     </div>
+                </div>
+
+                <!-- Input Token Pengerjaan Soal -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Token Pengerjaan</label>
+                    <input type="password" id="tokenUjian" required placeholder="Masukkan token dari guru" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm outline-none transition">
                 </div>
 
                 <input type="hidden" id="scriptUrl" value="https://script.google.com/macros/s/AKfycbylNOvbDUXDBLnwmbRT_-7OKEeT2VeJwWG36XBSv7KzWF1tbDTt7aBatztju4f93J4/exec">
@@ -268,6 +274,7 @@
     </div>
 
     <script>
+        const EXAM_TOKEN = "SMANTA";
         const SECRET_TEACHER_TOKEN = "GURU2026";
         const TOTAL_DURATION_SECONDS = 90 * 60; // 90 Menit
         let tokenPurpose = "reset";
@@ -458,6 +465,36 @@
         let timerInterval = null;
         let startTime = null;
 
+        function setupAudioOnFirstInteraction() {
+            const vid = document.getElementById('introVideo');
+            if (!vid) return;
+
+            // Coba putar dengan suara sejak halaman dimuat
+            vid.muted = false;
+            const promise = vid.play();
+
+            if (promise !== undefined) {
+                promise.catch(() => {
+                    // Jika diblokir oleh Autoplay Policy browser, putar dalam keadaan bisu lebih dulu
+                    vid.muted = true;
+                    vid.play();
+
+                    // Aktifkan suara secara otomatis pada klik/sentuhan pertama pengguna di mana saja
+                    const unMuteAudio = () => {
+                        vid.muted = false;
+                        vid.play();
+                        document.removeEventListener('click', unMuteAudio);
+                        document.removeEventListener('touchstart', unMuteAudio);
+                        document.removeEventListener('keydown', unMuteAudio);
+                    };
+
+                    document.addEventListener('click', unMuteAudio);
+                    document.addEventListener('touchstart', unMuteAudio);
+                    document.addEventListener('keydown', unMuteAudio);
+                });
+            }
+        }
+
         function shuffleArray(array) {
             const arr = JSON.parse(JSON.stringify(array));
             for (let i = arr.length - 1; i > 0; i--) {
@@ -625,12 +662,22 @@
             const nama = document.getElementById('namaSiswa').value.trim();
             const kelas = document.getElementById('kelasSiswa').value;
             const absen = document.getElementById('absenSiswa').value;
+            const tokenInput = document.getElementById('tokenUjian').value.trim();
             const scriptUrl = document.getElementById('scriptUrl').value.trim();
 
-            if (!nama || !kelas || !absen) {
-                alert("Harap lengkapi seluruh data identitas!");
+            if (!nama || !kelas || !absen || !tokenInput) {
+                alert("Harap lengkapi seluruh data identitas dan token!");
                 return;
             }
+
+            if (tokenInput !== EXAM_TOKEN) {
+                alert("Token pengerjaan salah! Silakan tanyakan token yang benar kepada guru/pengawas.");
+                return;
+            }
+
+            // Hentikan video saat mulai ujian
+            const vid = document.getElementById('introVideo');
+            if (vid) vid.pause();
 
             studentData = { nama, kelas, absen, scriptUrl };
             startTime = Date.now();
@@ -1039,6 +1086,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             initAbsenDropdown();
             restoreSessionIfExist();
+            setupAudioOnFirstInteraction();
         });
     </script>
 </body>
