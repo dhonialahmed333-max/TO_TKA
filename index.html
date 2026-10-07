@@ -40,7 +40,7 @@
         <!-- 1. Form Identitas Siswa + Pemutar Video -->
         <div id="identitasSection" class="max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
             
-            <!-- Video Instruksi (Autoplay & Loop) -->
+            <!-- Video Instruksi -->
             <div class="mb-5 rounded-xl overflow-hidden shadow-sm border border-slate-200 bg-black relative">
                 <video id="introVideo" controls playsinline autoplay loop class="w-full h-auto rounded-xl">
                     <source src="video.mp4" type="video/mp4">
@@ -302,7 +302,7 @@
             { id: 19, type: "pg", text: "Berikut yang tergolong dalam akun Riil (Permanen) yang dilaporkan dalam Neraca adalah ...", options: ["A. Pendapatan Jasa, Beban Gaji, Prive", "B. Kas, Piutang Usaha, Perlengkapan, Utang Usaha", "C. Beban Sewa, Pendapatan Diterima di Muka, Modal", "D. Beban Penyusutan, Akumulasi Penyusutan, Kas", "E. Penjualan, Beban Angkut, Retur Penjualan"], answer: 1, explanation: "Akun Riil terdiri dari Aset (Kas, Piutang, Perlengkapan), Liabilitas (Utang Usaha), dan Ekuitas yang saldonya dibawa berlanjut ke periode berikutnya pada Neraca." },
             { id: 20, type: "pg", text: "Hukum Gossen I menjelaskan tentang fenomena konsumsi barang yang memenuhi prinsip ...", options: ["A. Utilitas total meningkat secara konstan", "B. Utilitas marginal menurun seiring bertambahnya konsumsi unit secara terus-menerus", "C. Kebutuhan beragam dipenuhi secara seimbang", "D. Konsumsi akan berhenti saat pendapatan habis", "E. Kepuasan konsumen tidak dapat diukur secara kuantitatif"], answer: 1, explanation: "Hukum Gossen I menyatakan bahwa pemenuhan kebutuhan atas satu jenis barang secara terus-menerus akan memberikan utilitas marjinal (tambahan kepuasan) yang semakin menurun." },
             { id: 21, type: "pg", text: "Dalam neraca pembayaran, arus modal masuk berupa investasi asing langsung (FDI) dicatat dalam ...", options: ["A. Transaksi Berjalan - Neraca Perdagangan (Kredit)", "B. Transaksi Modal dan Finansial (Kredit)", "C. Transaksi Berjalan - Neraca Jasa (Debet)", "D. Transaksi Modal dan Finansial (Debet)", "E. Cadangan Devisa (Debet)"], answer: 1, explanation: "Investasi asing langsung (FDI) merupakan arus masuk modal finansial jangka panjang yang dicatat pada transaksi finansial/modal di sisi Kredit." },
-            { id: 22, type: "pg", text: "Kebijakan fiskal ekspansif yang dapat diambil pemerintah saat perekonomian mengalami resesi adalah ...", options: ["A. Menurunkan belanja pemerintah dan menaikkan pajak", "B. Menaikkan belanja pemerintah dan menurunkan tarif pajak", "C. Menjual surat utang negara dan menaikkan suku bunga", "D. Menurunkan belanja daerah dan memperketat anggaran", "E. Menghapus semua bantuan sosial masyarakat"], answer: 1, explanation: "Kebijakan fiskal ekspansif bertujuan menstimulasi perekonomian saat resesi dengan meningkatkan belanja pemerintah (G) dan memotong tarif pajak (T) untuk mendorong daya beli." },
+            { id: 22, type: "pg", text: "Kebijakan fiskal ekspansif yang dapat diambil pemerintah saat perekonomian mengalami resesi adalah ...", options: ["A. Menurunkan belanja pemerintah dan menaikkan pajak", "B. Menaikkan belanja pemerintah dan menurunkan tarif pajak", "C. Menjual surat utang negara dan menaikkan suku bunga", "D. Menurunkan belanja daerah dan memperketat anggaran", "E. Menhapus semua bantuan sosial masyarakat"], answer: 1, explanation: "Kebijakan fiskal ekspansif bertujuan menstimulasi perekonomian saat resesi dengan meningkatkan belanja pemerintah (G) dan memotong tarif pajak (T) untuk mendorong daya beli." },
             { id: 23, type: "pg", text: "Law of Diminishing Returns, ketika MP = 0 (Marginal Product bernilai nol), maka kondisi Produk Total (TP) adalah ...", options: ["A. Bernilai nol", "B. Berada pada titik maksimum", "C. Sedang mengalami penurunan drastis", "D. Bernilai negatif", "E. Sama dengan Produk Rata-rata (AP)"], answer: 1, explanation: "Sesuai hukum Law of Diminishing Returns, saat kurva Produk Marjinal memotong sumbu horizontal (MP = 0), maka Produk Total (TP) berada pada puncak maksimumnya." },
             { id: 24, type: "pg", text: "Teori Perdagangan Internasional yang dikemukakan oleh David Ricardo dikenal dengan teori ...", options: ["A. Keunggulan Mutlak (Absolute Advantage)", "B. Keunggulan Komparatif (Comparative Advantage)", "C. HECKSCHER-OHLIN (H-O)", "D. Merkantilisme", "E. Competitive Advantage"], answer: 1, explanation: "David Ricardo mengemukakan teori Keunggulan Komparatif, di mana negara tetap dapat berdagang secara menguntungkan jika fokus memproduksi barang dengan biaya peluang terendah." },
             { id: 25, type: "pg", text: "Proses menutup akun-akun nominal (pendapatan, beban, ikhtisar laba rugi, dan prive) dilakukan pada akhir periode melalui ...", options: ["A. Jurnal Penyesuaian", "B. Jurnal Penutup", "C. Jurnal Pembalik", "D. Jurnal Khusus", "E. Neraca Saldo Setelah Penutupan"], answer: 1, explanation: "Jurnal Penutup berfungsi menolkan saldo akun-akun sementara/nominal di akhir periode akuntansi." },
@@ -465,21 +465,27 @@
         let timerInterval = null;
         let startTime = null;
 
+        function stopIntroVideo() {
+            const vid = document.getElementById('introVideo');
+            if (vid) {
+                vid.pause();
+                vid.muted = true;
+                vid.currentTime = 0;
+            }
+        }
+
         function setupAudioOnFirstInteraction() {
             const vid = document.getElementById('introVideo');
             if (!vid) return;
 
-            // Coba putar dengan suara sejak halaman dimuat
             vid.muted = false;
             const promise = vid.play();
 
             if (promise !== undefined) {
                 promise.catch(() => {
-                    // Jika diblokir oleh Autoplay Policy browser, putar dalam keadaan bisu lebih dulu
                     vid.muted = true;
                     vid.play();
 
-                    // Aktifkan suara secara otomatis pada klik/sentuhan pertama pengguna di mana saja
                     const unMuteAudio = () => {
                         vid.muted = false;
                         vid.play();
@@ -644,6 +650,9 @@
                         return;
                     }
 
+                    // Hentikan video & suara saat sesi dipulihkan ke pengerjaan soal
+                    stopIntroVideo();
+
                     document.getElementById('identitasSection').classList.add('hidden');
                     document.getElementById('quizSection').classList.remove('hidden');
                     document.getElementById('headerTimer').classList.remove('hidden');
@@ -675,9 +684,8 @@
                 return;
             }
 
-            // Hentikan video saat mulai ujian
-            const vid = document.getElementById('introVideo');
-            if (vid) vid.pause();
+            // Hentikan pemutaran video dan matikan suara ketika siswa berhasil masuk ke soal
+            stopIntroVideo();
 
             studentData = { nama, kelas, absen, scriptUrl };
             startTime = Date.now();
