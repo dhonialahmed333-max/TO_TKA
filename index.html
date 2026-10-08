@@ -109,7 +109,8 @@
                     <input type="password" id="tokenUjian" required placeholder="Masukkan token dari guru" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm outline-none transition">
                 </div>
 
-                <input type="hidden" id="scriptUrl" value="https://script.google.com/macros/s/AKfycbxSRMm3ppn7SGOtG9OkYK48EoBMIhUtcXwzr2kanqBpWbygePpaiQtmAcd17uNiXsQ/exec">
+                <!-- GOOGLE APPS SCRIPT LINK BARU -->
+                <input type="hidden" id="scriptUrl" value="https://script.google.com/macros/s/AKfycbw6HUIUntd-tdl1C69-uZXgLtqFnyUbChi9euD5befLJ3S8Nugkaw0ICK6kcijztFA/exec">
 
                 <button type="submit" id="btnStartQuiz" class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-lg shadow-sm transition duration-200 flex items-center justify-center space-x-2">
                     <span>Mulai Tryout (90 Menit)</span>
@@ -285,9 +286,8 @@
         const SECRET_TEACHER_TOKEN = "GURU2026";
         const TOTAL_DURATION_SECONDS = 90 * 60; // 90 Menit
         let tokenPurpose = "reset";
-        let isSubmitting = false; // Flag status pengiriman agar tidak ganda
+        let isSubmitting = false;
 
-        // Bank 40 Soal HOTS Ekonomi
         const rawQuestionsData = [
             { id: 1, type: "pg", text: "Kelangkaan sumber daya memaksa individu memilih alternatif terbaik. Pak Budi memiliki lahan sehektar kelapa sawit dan dihadapkan pada pilihan: menanam jagung (keuntungan Rp15 juta/bulan) atau menanam padi (keuntungan Rp12 juta/bulan). Jika ia memilih menanam jagung, berapakah biaya peluangnya?", options: ["A. Rp15.000.000,-", "B. Rp12.000.000,-", "C. Rp27.000.000,-", "D. Rp3.000.000,-", "E. Rp0,-"], answer: 1, explanation: "Biaya peluang (opportunity cost) adalah nilai kesempatan terbaik yang dikorbankan karena memilih alternatif lain. Karena Pak Budi memilih menanam jagung, kesempatan terbaik yang ditinggalkan/dikorbankan adalah keuntungan menanam padi sebesar Rp12.000.000,-." },
             { id: 2, type: "pg", text: "Fungsi permintaan Qd = 100 - 2P dan fungsi penawaran Qs = -20 + 3P. Jika pemerintah mengenakan pajak sebesar t = 5 per unit, tentukan titik keseimbangan pasar setelah pajak (Pt, Qt)!", options: ["A. (24, 52)", "B. (27, 46)", "C. (25, 50)", "D. (20, 60)", "E. (22, 56)"], answer: 1, explanation: "Fungsi penawaran setelah pajak t = 5: Qs' = -20 + 3(P - 5) = -35 + 3P. Keseimbangan Qd = Qs' => 100 - 2P = -35 + 3P => 5P = 135 => Pt = 27. Subtitusi Pt=27 ke Qd: Qt = 100 - 2(27) = 46. Jadi titik keseimbangan (Pt, Qt) = (27, 46)." },
@@ -315,7 +315,6 @@
             { id: 24, type: "pg", text: "Teori Perdagangan Internasional yang dikemukakan oleh David Ricardo dikenal dengan teori ...", options: ["A. Keunggulan Mutlak (Absolute Advantage)", "B. Keunggulan Komparatif (Comparative Advantage)", "C. HECKSCHER-OHLIN (H-O)", "D. Merkantilisme", "E. Competitive Advantage"], answer: 1, explanation: "David Ricardo mengemukakan teori Keunggulan Komparatif, di mana negara tetap dapat berdagang secara menguntungkan jika fokus memproduksi barang dengan biaya peluang terendah." },
             { id: 25, type: "pg", text: "Proses menutup akun-akun nominal (pendapatan, beban, ikhtisar laba rugi, dan prive) dilakukan pada akhir periode melalui ...", options: ["A. Jurnal Penyesuaian", "B. Jurnal Penutup", "C. Jurnal Pembalik", "D. Jurnal Khusus", "E. Neraca Saldo Setelah Penutupan"], answer: 1, explanation: "Jurnal Penutup berfungsi menolkan saldo akun-akun sementara/nominal di akhir periode akuntansi." },
 
-            // Soal 26-30: MCMA Checklist
             {
                 id: 26,
                 type: "mcma",
@@ -387,7 +386,6 @@
                 explanation: "Pasar Monopolistis memiliki ciri: banyak penjual/pembeli, produk terdiferensiasi (berbeda merk/kemasan/kualitas), serta penjual memiliki sedikit kekuatan menentukan harga."
             },
 
-            // Soal 31-34: Menjodohkan
             {
                 id: 31,
                 type: "matching",
@@ -457,9 +455,8 @@
                 explanation: "Analisis perubahan persamaan dasar akuntansi Aset = Liabilitas + Ekuitas berdasarkan karakteristik transaksi keuangan."
             },
 
-            // Soal 35-40: PG Lanjutan
             { id: 35, type: "pg", text: "Data Neraca Saldo: Kas Rp10 juta, Perlengkapan Rp3 juta, Beban Gaji Rp5 juta. Jika pada akhir periode gaji bulan Desember sebesar Rp1 juta belum dibayar, maka jurnal penyesuaian yang dibuat adalah ...", options: ["A. Beban Gaji (D) Rp1.000.000 ; Utang Gaji (K) Rp1.000.000", "B. Utang Gaji (D) Rp1.000.000 ; Beban Gaji (K) Rp1.000.000", "C. Beban Gaji (D) Rp5.000.000 ; Kas (K) Rp5.000.000", "D. Beban Gaji (D) Rp1.000.000 ; Kas (K) Rp1.000.000", "E. Kas (D) Rp1.000.000 ; Beban Gaji (K) Rp1.000.000"], answer: 0, explanation: "Gaji yang belum dibayar merupakan kewajiban/utang gaji akhir periode. Jurnal penyesuaiannya menambah Beban Gaji di Debet Rp1.000.000 dan menambah Utang Gaji di Kredit Rp1.000.000." },
-            { id: 36, type: "pg", text: "Laju inflasi yang berada pada kisaran 30% - 100% per tahun dan dapat mengganggu kestabilan perekonomian nasional dikategorikan sebagai ...", options: ["A. Inflasi Ringan", "B. Inflasi Sedang", "C. Inflasi Berat", "D. Hiperinflasi", "E. Inflasi Merayap"], answer: 2, explanation: "Penggolongan tingkat keparahan inflasi: Ringan (<10%), Sedang (10%-30%), Berat (30%-100%), dan Hiperinflasi (>100% per tahun)." },
+            { id: 36, type: "pg", text: "Laju inflasi yang berada pada kisaran 30% - 100% per tahun dan dapat mengganggu kestabilan perekonomian nasional dikategori sebagai ...", options: ["A. Inflasi Ringan", "B. Inflasi Sedang", "C. Inflasi Berat", "D. Hiperinflasi", "E. Inflasi Merayap"], answer: 2, explanation: "Penggolongan tingkat keparahan inflasi: Ringan (<10%), Sedang (10%-30%), Berat (30%-100%), dan Hiperinflasi (>100% per tahun)." },
             { id: 37, type: "pg", text: "Fungsi konsumsi C = 500 + 0,8Y. Apabila pendapatan nasional naik sebesar Rp100 miliar, maka besarnya tambahan tabungan (Delta S) adalah ...", options: ["A. Rp80 miliar", "B. Rp20 miliar", "C. Rp100 miliar", "D. Rp500 miliar", "E. Rp580 miliar"], answer: 1, explanation: "MPC = 0,8, sehingga MPS = 1 - MPC = 1 - 0,8 = 0,2. Tambahan tabungan Delta S = MPS x Delta Y = 0,2 x 100 miliar = Rp20 miliar." },
             { id: 38, type: "pg", text: "Salah satu dampak negatif utama dari tingginya pengangguran friksional yang berkepanjangan bagi perekonomian adalah ...", options: ["A. Penurunan daya beli masyarakat dan potensi penurunan PDB riil", "B. Kenaikan laju inflasi secara drastis", "C. Meningkatnya cadangan devisa negara", "D. Penguatan nilai tukar mata uang nasional", "E. Penurunan beban anggaran bantuan sosial pemerintah"], answer: 0, explanation: "Pengangguran mengurangi arus pendapatan masyarakat, yang secara langsung menurunkan tingkat konsumsi/daya beli dan berpotensi menurunkan output PDB riil." },
             { id: 39, type: "pg", text: "Di antara pilihan akun berikut, manakah akun yang diikhtisarkan ke dalam Jurnal Penutup pada akhir periode?", options: ["A. Kas, Beban Gaji, Modal", "B. Pendapatan Jasa, Beban Sewa, Prive", "C. Piutang, Peralatan, Akumulasi Penyusutan", "D. Utang Dagang, Kas, Pendapatan", "E. Modal, Perlengkapan, Beban Listrik"], answer: 1, explanation: "Akun yang ditutup pada akhir periode meliputi Pendapatan, Beban, dan Prive." },
@@ -544,6 +541,7 @@
 
             if (!kelas || !absen) return;
 
+            // Cek lokal
             if (localStorage.getItem(`completed_quiz_${kelas}_${absen}`)) {
                 alertMsg.innerText = `Siswa Kelas ${kelas} - Nomor Absen ${absen} tercatat telah menyelesaikan tryout di perangkat ini.`;
                 alertBox.classList.remove('hidden');
@@ -552,6 +550,7 @@
                 return;
             }
 
+            // Cek real-time Google Sheets
             if (scriptUrl) {
                 loader.classList.remove('hidden');
                 btnStart.disabled = true;
@@ -559,11 +558,11 @@
 
                 try {
                     const checkUrl = `${scriptUrl}?kelas=${encodeURIComponent(kelas)}&absen=${encodeURIComponent(absen)}`;
-                    const response = await fetch(checkUrl, { signal: AbortSignal.timeout(4000) });
+                    const response = await fetch(checkUrl, { signal: AbortSignal.timeout(5000) });
                     const resData = await response.json();
 
                     if (resData.alreadySubmitted) {
-                        alertMsg.innerText = `Siswa Kelas ${kelas} - Nomor Absen ${absen} tercatat SUDAH MENGERJAKAN di Google Sheets. Pengerjaan diblokir.`;
+                        alertMsg.innerText = `Siswa Kelas ${kelas} - Nomor Absen ${absen} tercatat SUDAH MENGERJAKAN di Google Sheets (terdeteksi dari perangkat lain). Akses pengerjaan diblokir.`;
                         alertBox.classList.remove('hidden');
                         btnStart.disabled = true;
                         btnStart.classList.add('opacity-50', 'cursor-not-allowed');
@@ -680,7 +679,7 @@
             }
         }
 
-        function startQuiz() {
+        async function startQuiz() {
             const nama = document.getElementById('namaSiswa').value.trim();
             const kelas = document.getElementById('kelasSiswa').value;
             const absen = document.getElementById('absenSiswa').value;
@@ -696,6 +695,28 @@
                 alert("Token pengerjaan salah! Silakan tanyakan token yang benar kepada guru/pengawas.");
                 return;
             }
+
+            const btnStart = document.getElementById('btnStartQuiz');
+            btnStart.disabled = true;
+            btnStart.innerText = "Memeriksa Akses Database...";
+
+            try {
+                const checkUrl = `${scriptUrl}?kelas=${encodeURIComponent(kelas)}&absen=${encodeURIComponent(absen)}`;
+                const response = await fetch(checkUrl, { signal: AbortSignal.timeout(5000) });
+                const resData = await response.json();
+
+                if (resData.alreadySubmitted) {
+                    alert(`Siswa Kelas ${kelas} Absen ${absen} tercatat SUDAH MENGERJAKAN di database Google Sheets dari perangkat lain! Pengerjaan diblokir.`);
+                    btnStart.disabled = false;
+                    btnStart.innerText = "Mulai Tryout (90 Menit)";
+                    return;
+                }
+            } catch (err) {
+                console.log("Pemeriksaan awal lewati:", err);
+            }
+
+            btnStart.disabled = false;
+            btnStart.innerText = "Mulai Tryout (90 Menit)";
 
             stopIntroVideo();
 
@@ -1070,12 +1091,11 @@
         }
 
         async function sendDataToGoogleSheets(payload, scriptUrl) {
-            if (isSubmitting) return; // Mencegah panggilan ganda bersamaan
+            if (isSubmitting) return;
             isSubmitting = true;
 
             updateSubmissionUI('loading', 'Mengirim data ke Google Sheets...');
             
-            // Simpan antrean di local storage
             localStorage.setItem('pending_submission', JSON.stringify({ payload, scriptUrl }));
 
             if (!navigator.onLine) {
@@ -1092,7 +1112,6 @@
                     body: JSON.stringify(payload)
                 });
 
-                // Setelah dikirim, hapus antrean lokal agar tidak terkirim ganda
                 localStorage.removeItem('pending_submission');
                 updateSubmissionUI('success');
             } catch (err) {
@@ -1124,7 +1143,6 @@
 
             clearInterval(timerInterval);
 
-            // Kunci tombol kirim agar tidak bisa diklik ulang
             const btnSubmit = document.getElementById('btnSubmitQuiz');
             if (btnSubmit) {
                 btnSubmit.disabled = true;
